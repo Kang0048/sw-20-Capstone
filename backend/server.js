@@ -7,7 +7,7 @@ const express = require("express");
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
-dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
+dotenv.config({ path: path.resolve(__dirname, '20.env') });
 // express 사용
 const app = express();
 // 포트번호 설정
