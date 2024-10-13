@@ -52,7 +52,7 @@ app.post('/generate-image', async (req, res) => {
         const imageResponse = await openai.images.generate({
             prompt: prompt, // 프롬프트를 JSON 형식으로 전달
             n: 4, // 생성할 이미지 수
-            quality:"standard", //
+            quality:"standard", // 품질과 속도
             size: "256x256" // 이미지 크기
         });
 
