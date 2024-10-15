@@ -56,7 +56,7 @@ app.post('/generate-image', async (req, res) => {
         // 프롬프트 정리
         const prompt = response.choices[0].message.content.trim(); // response에서 결과 가져오기
         // 수정사항이 추가된 프롬프트
-        const lastPrompt = prompt + "If you're going to enter letters, just enter numbers."
+        const lastPrompt = prompt + "문자는 입력하지 말고, 숫자만 입력해서 이미지 작성해줘"
         console.log('Generated Prompt:', lastPrompt); // 프롬프트 출력
 
 
