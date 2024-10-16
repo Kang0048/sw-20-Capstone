@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .images {
+            margin-top: 20px;
+        }
+        .images img {
+            max-width: 100%;
+            height: auto;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>이미지 생성</h1>
+
+    <div>
+        <input type="text" id="userInput" placeholder="텍스트를 입력하세요..">
+        <button onclick="generateImages()">생성</button>
+    </div>
+
+    <div class="images" id="imageContainer"></div>
+
+    <script>
+        async function generateImages() {
+            const userInput = document.getElementById('userInput').value;
+
+            if (!userInput) {
+                alert("Please enter a prompt.");
+                return;
+            }
+
+            const response = await fetch('http://localhost:5000/generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userInput: userInput })
+            });
+
+            const data = await response.json();
+
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.innerHTML = ''; // 기존 이미지 초기화
+
+            if (data.images && data.images.length > 0) {
+                data.images.forEach(imageUrl => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = imageUrl;
+                    imageContainer.appendChild(imgElement);
+                });
+            } else {
+                imageContainer.innerHTML = '<p>리턴할 이미지가 없습니다.</p>';
+            }
+        }
+    </script>
+</body>
+</html>
