@@ -1,46 +1,73 @@
-const express = require('express');
-const { Configuration, OpenAIApi } = require('openai');
-const OpenAI = require('openai');
-const path = require('path'); // 경로 처리를 위한 모듈 추가
-require('dotenv').config();
+// dotenv 불러오기
+const dotenv = require('dotenv');
+const path = require('path');
+// Cors 불러오기
+const cors = require('cors');
+// express 불러오기
+const express = require("express");
+// openAI 불러오기
+const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
 
+// .env 파일의 API 키를 로드 (파일 경로 지정)
+dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
+// express 사용
 const app = express();
-app.use(express.json());
+// 포트번호 설정
+const port = 5000;
+app.use(cors()); 
 
+// OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
-
+if (!openaiApiKey) {
+    console.error('OPENAI_API_KEY is missing or empty.');
+    process.exit(1); // 서버 종료
+}
+// openai로 키 설정
 const openai = new OpenAI({
-  apiKey: openaiApiKey,
+    apiKey: openaiApiKey,
+});
+  
+// JSON 형식의 요청 본문(body)을 처리
+app.use(express.json());
+  
+// OpenAI API를 호출하는 라우트, /generate-image 엔드포인트
+app.post('/generate-image', async (req, res) => {
+    console.log('Request received:', req.body); // 요청 로그 출력
+
+    try {
+        // 사용자에게 받은 텍스트
+        const { userInput } = req.body; // userInput에서 입력값을 가져옴
+        console.log('Prompt received:', userInput); // 프롬프트 로그 출력
+        
+        // 1: LLM API에 프롬프트 요청
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4', // 모델을 chat API로 변경
+            messages: [{ role: 'user', content: userInput }], // userInput을 프롬프트로 사용
+        });
+
+        // 프롬프트 정리
+        const prompt = response.choices[0].message.content.trim(); // response에서 결과 가져오기
+
+        // 2: 이미지 생성 API에 요청
+        const imageResponse = await openai.images.generate({
+            prompt: prompt, // 프롬프트를 JSON 형식으로 전달
+            n: 4, // 생성할 이미지 수
+            quality:"standard", //
+            size: "256x256" // 이미지 크기
+        });
+
+        // 3: 응답 처리
+        // 이미지 URL 배열화
+        const images = imageResponse.data.map(image => image.url);
+        // 사용자에게는 이미지 URL만 전달
+        res.json({ images: images });
+    } catch (error) {
+        console.error('Error with OpenAI API request:', error.message);
+        res.status(500).json({ error: 'An error occurred while processing your request.' });
+    }
 });
 
-// HTML 파일 제공을 위한 라우트 설정
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-/*app.post('/generate-prompt', async (req, res) => {
-  const userInput = req.body.inputText;
-
-  if (!userInput) {
-    return res.status(400).json({ error: 'inputText가 필요합니다.' });
-  }
-
-  try {
-    const completion = await openai.createCompletion({
-      model: 'text-davinci-003',
-      prompt: `The user has entered the following text: "${userInput}". Please create a detailed prompt based on this input.`,
-      max_tokens: 150,
-    });
-
-    const generatedPrompt = completion.data.choices[0].text.trim();
-    res.json({ prompt: generatedPrompt });
-  } catch (error) {
-    console.error('Error with OpenAI API:', error);
-    res.status(500).json({ error: '프롬프트 생성 중 오류가 발생했습니다.' });
-  }
-});*/
-
-const port = process.env.PORT || 3000;
+// http 실행
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    console.log(`서버가 정상적으로 실행되었습니다.`);
 });

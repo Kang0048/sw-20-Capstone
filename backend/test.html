@@ -36,11 +36,11 @@
     </style>
 </head>
 <body>
-    <h1>Generate Images using OpenAI</h1>
+    <h1>이미지 생성</h1>
 
     <div>
-        <input type="text" id="userInput" placeholder="Enter your prompt here...">
-        <button onclick="generateImages()">Generate</button>
+        <input type="text" id="userInput" placeholder="텍스트를 입력하세요..">
+        <button onclick="generateImages()">생성</button>
     </div>
 
     <div class="images" id="imageContainer"></div>
@@ -74,7 +74,7 @@
                     imageContainer.appendChild(imgElement);
                 });
             } else {
-                imageContainer.innerHTML = '<p>No images returned. Please try again.</p>';
+                imageContainer.innerHTML = '<p>리턴할 이미지가 없습니다.</p>';
             }
         }
     </script>
