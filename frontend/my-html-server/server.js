@@ -9,7 +9,7 @@ app.use(express.static(path.join(__dirname)));
 
 // 1번 페이지를 기본 경로로 설정
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '1번.html'));
+    res.sendFile(path.join(__dirname, 'ai-image.html'));
 });
 
 // 서버 실행
