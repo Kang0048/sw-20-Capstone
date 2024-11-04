@@ -13,15 +13,19 @@ Promise.all([requestData('0200'), requestData('1100')])
         const minTemp = data0200.minTemp;
         const avgTemp = data0200.avgTemp;
         const sky = data0200.sky;
+        
 
         // 1100 시각에서 얻은 최고 기온
         const maxTemp = data1100.maxTemp;
+        const pop = data1100.pop;
 
         // 결과 출력
         console.log('예측 평균 기온 (TMP):', avgTemp);
         console.log('예측 최저 기온 (TMN):', minTemp);
         console.log('예측 최고 기온 (TMX):', maxTemp);
         console.log('예측 하늘 상태 (SKY):', sky);
+        //01 맑음 - 02 구름조금 - 03 구름많이 - 04 흐림 
+        console.log('예측 강수 확률 (POP):', pop);
     })
     .catch(error => console.log('데이터 요청 중 오류 발생:', error));
 
@@ -48,6 +52,7 @@ function requestData(baseTime) {
                             if (item.category === 'TMN' && !tempData.minTemp) tempData.minTemp = item.fcstValue;
                             if (item.category === 'TMX' && !tempData.maxTemp) tempData.maxTemp = item.fcstValue;
                             if (item.category === 'SKY' && !tempData.sky) tempData.sky = item.fcstValue;
+                            if (item.category === 'POP' && !tempData.pop) tempData.pop = item.fcstValue;
                         });
 
                         resolve(tempData);
