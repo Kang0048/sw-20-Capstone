@@ -130,3 +130,32 @@
         reader.readAsDataURL(file);
         }
     });
+    
+    let selectedImageUrl = null; // 선택된 이미지의 URL 저장
+
+    // 이미지 클릭 시 선택 상태 설정 함수
+    function selectImage(element) {
+        // 모든 이미지 박스의 선택 상태 초기화
+        document.querySelectorAll('.image-result-box').forEach(box => {
+            box.classList.remove('selected');
+        });
+
+        // 클릭된 이미지 박스에 선택 상태 추가
+        element.classList.add('selected');
+        selectedImageUrl = element.style.backgroundImage.slice(5, -2); // URL 추출하여 저장
+    }
+
+    // 확정 버튼 클릭 시 선택된 이미지를 imageUploadContainer에 표시하는 함수
+    function confirmSelection() {
+        if (selectedImageUrl) {
+            const imageUploadContainer = document.getElementById('imageUploadContainer');
+            imageUploadContainer.style.backgroundImage = `url(${selectedImageUrl})`;
+            imageUploadContainer.style.backgroundSize = "cover";
+            imageUploadContainer.style.backgroundPosition = "center";
+            
+            // 기존 "+" 텍스트 숨김
+            document.getElementById('uploadIcon').style.display = 'none';
+        } else {
+            alert("이미지를 선택해주세요.");
+        }
+    }

@@ -99,3 +99,18 @@ document.getElementById("addPhoneButton").addEventListener("click", function () 
         alert("유효한 휴대폰 번호를 입력해주세요.");
     }
 });
+// 확정 버튼 클릭 시 선택된 이미지를 imageUploadContainer에 표시하는 함수
+function confirmSelection() {
+    if (selectedImageUrl) {
+        const imageUploadContainer = document.getElementById('imageUploadContainer');
+        imageUploadContainer.style.backgroundImage = `url(${selectedImageUrl})`;
+        imageUploadContainer.style.backgroundSize = "cover";
+        imageUploadContainer.style.backgroundPosition = "center";
+        
+        // 기존 "+" 텍스트 숨김
+        document.getElementById('uploadIcon').style.display = 'none';
+    } else {
+        alert("이미지를 선택해주세요.");
+    }
+}
+

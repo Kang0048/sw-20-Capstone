@@ -120,7 +120,6 @@ app.post('/generate-APIimage', async (req, res) => {
 
 
         // 3: 응답 처리
-        // 이미지 URL 배열화
         const images = imageResponse.data.map(image => image.url);
 
         // 사용자에게는 이미지 URL과 크기 정보를 전달
