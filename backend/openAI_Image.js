@@ -1,28 +1,16 @@
 // dotenv 불러오기
 const dotenv = require('dotenv');
 const path = require('path');
-// .env 파일의 API 키를 로드 (파일 경로 지정)
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-
 // Cors 불러오기
 const cors = require('cors');
 // express 불러오기
 const express = require("express");
 // openAI 불러오기
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
-// 이미지 생성 API 불러오기
-// const openAI_Image = require("./openAI_Image"); 
 
 
-// express 사용
-const app = express();
-// 포트번호 설정
-const port = 5000;
-
-app.use(cors());
-app.use(express.json());
-
-//app.use('/', openAI_Image);
+// .env 파일의 API 키를 로드 (파일 경로 지정)
+dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
 
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -34,20 +22,12 @@ if (!openaiApiKey) {
 const openai = new OpenAI({
     apiKey: openaiApiKey,
 });
-
-app.use(express.static(path.join(__dirname, '../frontend')));
-app.use('/backend', express.static(path.join(__dirname)));
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend","weather.html")); // 원하는 HTML 파일 경로
-});
-
-
-
+  
 // express 사용
-// const router = express.Router();
+const router = express.Router();
 
 // OpenAI API를 호출하는 라우트, /generate-image 엔드포인트
-app.post('/generate-APIimage', async (req, res) => {
+router.post('/generate-APIimage', async (req, res) => {
     console.log('Request received:', req.body); // 요청 로그 출력
     /*
         * 프롬프트는 날씨(최저기온, 최고기온, 평균기온, 날씨)에 맞는 코디 이미지 생성 프롬프트
@@ -61,20 +41,20 @@ app.post('/generate-APIimage', async (req, res) => {
 
     try {
         // 사용자에게 받은 텍스트
-        const { userKeyword } = req.body;
+        const { userInput, userKeyword } = req.body;
         // 사용자의 입력값에 더해진 새로운 입력값
         let newInput;
         if(userKeyword != null&& userKeyword.trim() !== ""){
             newInput = `Please provide your response in English. With an outfit suitable for weather conditions with a minimum 
             temperature of ${minTemp}°C, an average temperature of ${avgTemp}°C, and a maximum temperature of ${maxTemp}°C. 
             The weather is described as "${sky}". Just focus on the outfit. Change ${userKeyword} to English and create 
-            an outfit style that includes ${userKeyword}. Recommend an outfit with use that is appropriate 
+            an outfit style that includes ${userKeyword}. Recommend an outfit with use ${userInput} that is appropriate 
             for these temperatures and weather conditions. Additionally, create a background that matches the weather condition 
             described as "${sky}". Make sure that the length of your response does not exceed 700 characters.`;
         }else{
             newInput = `Please provide your response in English. With an outfit suitable for weather conditions with a minimum 
             temperature of ${minTemp}°C, an average temperature of ${avgTemp}°C, and a maximum temperature of ${maxTemp}°C. 
-            The weather is described as "${sky}".Recommend an outfit with use that is appropriate for these temperatures 
+            The weather is described as "${sky}".Recommend an outfit with use ${userInput} that is appropriate for these temperatures 
             and weather conditions. Additionally, create a background that matches the weather condition described as "${sky}".
             Make sure that the length of your response does not exceed 700 characters.`;
         }
@@ -131,8 +111,3 @@ app.post('/generate-APIimage', async (req, res) => {
     }
 });
 
-
-// http 실행
-app.listen(port, () => {
-    console.log(`서버가 정상적으로 실행되었습니다.`);
-});
