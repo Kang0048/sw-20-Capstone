@@ -23,7 +23,7 @@
                     <a class="nav-link" href="ai-image.html">이미지 생성 문자</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="weather.html">쇼핑몰 (광고)</a>
+                    <a class="nav-link" href="weather.html">날씨 기반 문자</a>
                 </li>
             </ul>
         </div>
@@ -100,7 +100,7 @@
         </div>
     </div>
 
-    <!-- 이미지 생성창 -->
+    <!-- 자동 이미지 생성 페이지 -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -139,7 +139,7 @@
                                         <h6 class="section-title mb-3">아이템 (선택)</h6>
                                         <p class="text-muted">* 아이템 1개를 입력 후 추가를 누르세요.(ex:청바지, 코트)</p>
                                         <div class="d-flex mb-3">
-                                            <input type="text" class="form-control me-2"
+                                            <input type="text" id="userInput" class="form-control me-2"
                                                 placeholder="입력한 아이템으로 스타일링이 진행됩니다.">
                                             <button class="btn btn-outline-secondary">추가</button>
                                         </div>
@@ -147,29 +147,35 @@
                                     <div class="input-group-custom">
                                         <h6 class="section-title mb-3">AI 자동 생성</h6>
                                         <p class="text-muted">현재 계절,날씨를 반영하여 스타일링 이미지를 AI가 생성합니다.</p>
-                                        <button class="btn btn-custom w-100">이미지 생성</button>
+                                        <button class="btn btn-custom w-100" onclick="generateImages()">이미지 생성</button>
+
                                     </div>
                                 </div>
                                 <!-- Right Column -->
+                                <!-- 생성 결과 및 이미지 선택 섹션 -->
                                 <div class="col-lg-4">
                                     <div class="input-group-custom h-100">
                                         <h6 class="section-title mb-3">생성 결과</h6>
                                         <div class="row g-3">
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox1">+</div>
+                                                <div class="image-result-box" id="imageBox1"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox2">+</div>
+                                                <div class="image-result-box" id="imageBox2"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox3">+</div>
+                                                <div class="image-result-box" id="imageBox3"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox4">+</div>
+                                                <div class="image-result-box" id="imageBox4"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                         </div>
                                         <button class="btn btn-secondary w-100 mt-4"
-                                            onclick="generateImages()">확정</button>
+                                            onclick="confirmSelection()">확정</button>
                                     </div>
                                 </div>
                             </div>
@@ -255,166 +261,174 @@
                                     <div class="input-group-custom">
                                         <h6 class="section-title mb-3">날씨 기반 AI 생성</h6>
                                         <p class="text-muted">입력하신 날씨,계절에 맞는 스타일링 이미지를 AI가 생성합니다.</p>
-                                        <button class="btn btn-custom w-100">이미지 생성</button>
+                                        <button class="btn btn-custom w-100" onclick="generateImages()">이미지 생성</button>
                                     </div>
                                 </div>
-                                <!-- Right Column (Shared) -->
                                 <div class="col-lg-4">
                                     <div class="input-group-custom h-100">
                                         <h6 class="section-title mb-3">생성 결과</h6>
                                         <div class="row g-3">
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox1">+</div>
+                                                <div class="image-result-box" id="imageBox1"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox2">+</div>
+                                                <div class="image-result-box" id="imageBox2"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox3">+</div>
+                                                <div class="image-result-box" id="imageBox3"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="image-result-box" id="imageBox4">+</div>
+                                                <div class="image-result-box" id="imageBox4"
+                                                    onclick="selectImage(this)">+</div>
                                             </div>
                                         </div>
                                         <button class="btn btn-secondary w-100 mt-4"
-                                            onclick="generateImages()">확정</button>
+                                            onclick="confirmSelection()">확정</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <!-- AI 텍스트 생성 창 -->
-    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="height: 90vh;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="imageModalLabel">AI 자동 생성</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Left Section -->
-                    <div class="input-section">
-                        <h6 class="section-title">발송 목적 및 내용</h6>
-                        <textarea class="form-control mb-2"
-                            placeholder="ex > 겨울 맞이 30% 할인 프로모션 진행, 블랙프라이데이 진행 최대 80% 할인" rows="4"></textarea>
-                        <div class="text-end byte-counter">0/200byte</div>
-
-                        <h6 class="section-title mb-3">중요 키워드 (선택)</h6>
-                        <p class="text-muted">* 키워드 1개 입력 후 Enter를 누르세요.</p>
-                        <div class="d-flex mb-3">
-                            <input type="text" class="form-control me-2" placeholder="입력한 키워드가 생성결과에 포함될 확률이 높아집니다.">
-                            <button class="btn btn-outline-secondary">추가</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                         </div>
-                        <div class="text-end byte-counter">0/20byte</div>
-
-                        <button class="btn btn-custom">AI 자동 생성</button>
                     </div>
-
-                    <!-- Right Section -->
-                    <div class="result-section">
-                        <h6 class="section-title">생성 결과</h6>
-                        <p>생성결과가 없습니다.</p>
-                        <button class="confirm-btn">확정</button>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- 메세지 전송전 화면 -->
-    <div class="modal fade" id="sendModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content" style="height: 90vh;">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="messageModalLabel">문자 전송 및 이미지 생성</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body container">
-                    <div class="row h-100">
-                        <!-- Left Column: Display Title and Message Content -->
-                        <div class="col-md-6 d-flex flex-column justify-content-start" style="min-width: 550px;">
-                            <div class="input-title">제목</div>
-                            <div class="display-title mb-3"
-                                style="border: 1px solid #ddd; padding: 10px; min-height: 40px;">
-                                <!-- 제목 내용이 실시간 표시될 곳 -->
+
+            <!-- 메세지 자동 생성 페이지 -->
+            <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="imageModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="height: 90vh;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="imageModalLabel">AI 자동 생성</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Left Section -->
+                            <div class="input-section">
+                                <h6 class="section-title">발송 목적 및 내용</h6>
+                                <textarea class="form-control mb-2"
+                                    placeholder="ex > 겨울 맞이 30% 할인 프로모션 진행, 블랙프라이데이 진행 최대 80% 할인" rows="4"></textarea>
+                                <div class="text-end byte-counter">0/200byte</div>
+
+                                <h6 class="section-title mb-3">중요 키워드 (선택)</h6>
+                                <p class="text-muted">* 키워드 1개 입력 후 Enter를 누르세요.</p>
+                                <div class="d-flex mb-3">
+                                    <input type="text" class="form-control me-2"
+                                        placeholder="입력한 키워드가 생성결과에 포함될 확률이 높아집니다.">
+                                    <button class="btn btn-outline-secondary">추가</button>
+                                </div>
+                                <div class="text-end byte-counter">0/20byte</div>
+
+                                <button class="btn btn-custom">AI 자동 생성</button>
                             </div>
-                            <div class="input-title">문자 내용</div>
-                            <div class="display-message"
-                                style="border: 1px solid #ddd; padding: 10px; height: 70%; overflow-y: auto;">
-                                <!-- 문자 내용이 실시간 표시될 곳 -->
+
+                            <!-- Right Section -->
+                            <div class="result-section">
+                                <h6 class="section-title">생성 결과</h6>
+                                <p>생성결과가 없습니다.</p>
+                                <button class="confirm-btn">확정</button>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 메세지 최종 확인 페이지 -->
+            <div class="modal fade" id="sendModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content" style="height: 90vh;">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="messageModalLabel">문자 전송 및 이미지 생성</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body container">
+                            <div class="row h-100">
+                                <!-- Left Column: Display Title and Message Content -->
+                                <div class="col-md-6 d-flex flex-column justify-content-start"
+                                    style="min-width: 550px;">
+                                    <div class="input-title">제목</div>
+                                    <div class="display-title mb-3"
+                                        style="border: 1px solid #ddd; padding: 10px; min-height: 40px;">
+                                        <!-- 제목 내용이 실시간 표시될 곳 -->
+                                    </div>
+                                    <div class="input-title">문자 내용</div>
+                                    <div class="display-message"
+                                        style="border: 1px solid #ddd; padding: 10px; height: 70%; overflow-y: auto;">
+                                        <!-- 문자 내용이 실시간 표시될 곳 -->
+                                    </div>
+                                </div>
 
-                        <!-- Right Column: Image Preview -->
-                        <div class="col-md-6 d-flex flex-column justify-content-start" style="min-width: 550px;">
-                            <div class="input-title">이미지 예시</div>
-                            <div class="image-preview flex-grow-1 d-flex align-items-center justify-content-center"
-                                style="border: 1px solid #ddd; min-height: 300px;">
-                                <span>이미지 예시</span>
+                                <!-- Right Column: Image Preview -->
+                                <div class="col-md-6 d-flex flex-column justify-content-start"
+                                    style="min-width: 550px;">
+                                    <div class="input-title">이미지 예시</div>
+                                    <div class="image-preview flex-grow-1 d-flex align-items-center justify-content-center"
+                                        style="border: 1px solid #ddd; min-height: 300px;">
+                                        <span>이미지 예시</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-send">이미지와 함께 문자 전송</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- 발신번호 등록 창 -->
-    <div class="modal fade" id="PhoneModal" tabindex="-1" aria-labelledby="PhoneModalLabel" aria-hidden="true">
-        <div class="modal-dialog custom-width modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="PhoneModalLabel">발신번호 신규 등록</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="p-3 rounded">
-                        <!-- 통신사 선택 -->
-                        <div class="mb-3">
-                            <label for="carrierSelect" class="form-label">통신사</label>
-                            <select id="carrierSelect" class="form-select" aria-label="통신사 선택">
-                                <option selected>통신사 선택</option>
-                                <option value="1">SKT</option>
-                                <option value="2">KT</option>
-                                <option value="3">LG U+</option>
-                            </select>
-                        </div>
-
-                        <!-- 발신번호 입력 -->
-                        <div class="mb-3">
-                            <label for="phoneNumberInput" class="form-label">발신번호</label>
-                            <input type="text" class="form-control" id="phoneNumberInput" placeholder="발신번호를 입력해주세요.">
-                        </div>
-
-                        <!-- 발신번호 명의자 입력 -->
-                        <div class="mb-3">
-                            <label for="ownerInput" class="form-label">발신번호 명의자</label>
-                            <input type="text" class="form-control" id="ownerInput" placeholder="명의자를 입력해주세요.">
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-send">이미지와 함께 문자 전송</button>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer d-flex justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary" id="registerPhoneNumber">등록</button>
+            </div>
+
+            <!-- 핸드폰 발신 번호 등록 페이지 -->
+            <div class="modal fade" id="PhoneModal" tabindex="-1" aria-labelledby="PhoneModalLabel" aria-hidden="true">
+                <div class="modal-dialog custom-width modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="PhoneModalLabel">발신번호 신규 등록</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="p-3 rounded">
+                                <!-- 통신사 선택 -->
+                                <div class="mb-3">
+                                    <label for="carrierSelect" class="form-label">통신사</label>
+                                    <select id="carrierSelect" class="form-select" aria-label="통신사 선택">
+                                        <option selected>통신사 선택</option>
+                                        <option value="1">SKT</option>
+                                        <option value="2">KT</option>
+                                        <option value="3">LG U+</option>
+                                    </select>
+                                </div>
+
+                                <!-- 발신번호 입력 -->
+                                <div class="mb-3">
+                                    <label for="phoneNumberInput" class="form-label">발신번호</label>
+                                    <input type="text" class="form-control" id="phoneNumberInput"
+                                        placeholder="발신번호를 입력해주세요.">
+                                </div>
+
+                                <!-- 발신번호 명의자 입력 -->
+                                <div class="mb-3">
+                                    <label for="ownerInput" class="form-label">발신번호 명의자</label>
+                                    <input type="text" class="form-control" id="ownerInput" placeholder="명의자를 입력해주세요.">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+                            <button type="button" class="btn btn-primary" id="registerPhoneNumber">등록</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <script src="scriptweather.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="scriptweather.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
