@@ -49,7 +49,7 @@ app.get("/", (req, res) => {
 // OpenAI API를 호출하는 라우트, /generate-image 엔드포인트
 app.post('/generate-APIimage', async (req, res) => {
     console.log('Request received:', req.body); // 요청 로그 출력
-    /*
+        /*
         * 프롬프트는 날씨(최저기온, 최고기온, 평균기온, 날씨)에 맞는 코디 이미지 생성 프롬프트
         * 날씨 api를 통해 받아와서 변수에 저장
         */
