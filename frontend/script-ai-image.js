@@ -1,5 +1,5 @@
- // 현재 URL을 기준으로 활성화된 메뉴 항목 표시
- document.addEventListener("DOMContentLoaded", function () {
+// 현재 URL을 기준으로 활성화된 메뉴 항목 표시
+document.addEventListener("DOMContentLoaded", function () {
     const currentPath = window.location.pathname.split("/").pop(); // 현재 파일명 추출
     const menuItems = document.querySelectorAll(".navbar-nav .nav-link"); // 모든 메뉴 링크 선택
 
@@ -106,7 +106,7 @@ function confirmSelection() {
         imageUploadContainer.style.backgroundImage = `url(${selectedImageUrl})`;
         imageUploadContainer.style.backgroundSize = "cover";
         imageUploadContainer.style.backgroundPosition = "center";
-        
+
         // 기존 "+" 텍스트 숨김
         document.getElementById('uploadIcon').style.display = 'none';
     } else {
