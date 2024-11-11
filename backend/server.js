@@ -1,26 +1,27 @@
 // dotenv 불러오기
 const dotenv = require('dotenv');
 const path = require('path');
-// .env 파일의 API 키를 로드 (파일 경로 지정)
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-
 // Cors 불러오기
 const cors = require('cors');
 // express 불러오기
 const express = require("express");
 // openAI 불러오기
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
+
 // 이미지 생성 API 불러오기
 const openAI_Image = require("./openAI_Image"); 
 const openAI_Prompt = require("./openAI_prompt");
 
+
+// .env 파일의 API 키를 로드 (파일 경로 지정)
+dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
 // express 사용
 const app = express();
 // 포트번호 설정
 const port = 5000;
-
 app.use(cors());
 app.use(express.json());
+
 
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
