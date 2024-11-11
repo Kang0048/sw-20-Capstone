@@ -36,8 +36,9 @@ const openai = new OpenAI({
 
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/backend', express.static(path.join(__dirname)));
+// 원하는 HTML 파일 경로
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend","weather.html")); // 원하는 HTML 파일 경로
+    res.sendFile(path.join(__dirname, "../frontend","weather.html")); 
 });
 
 app.use('/', openAI_Image);
