@@ -7,23 +7,21 @@ const crypto = require('crypto');
 const TIME_OUT = 5000;
 const API_KEY = '6e84ebeb9c8eb9215c1d3f8de4de4fa7598cea2719f94ccb6a9109d35d4f5345';
 const PPURIO_ACCOUNT = 'cap123';
-const FROM = '01040997586';
-const FILE_PATH = './image.jpg'; // MMS 발송시 첨부할 이미지 경로를 설정합니다.
 const URI = 'https://message.ppurio.com';
 
 // 문자 발송 요청 함수
-async function requestSend() {
+async function requestSend(to, from, name, content, filePath) {
     const basicAuthorization = Buffer.from(`${PPURIO_ACCOUNT}:${API_KEY}`).toString('base64');
-    const tokenResponse = await getToken(URI, basicAuthorization); 
-    const sendResponse = await send(URI, tokenResponse.token); 
+    const tokenResponse = await getToken(URI, basicAuthorization);
+    const sendResponse = await send(URI, tokenResponse.token, to, from, name, content, filePath);
     console.log(sendResponse);
 }
 
 // 문자 발송 예약 취소 함수
-async function requestCancel() {
+async function requestCancel(messageKey) {
     const basicAuthorization = Buffer.from(`${PPURIO_ACCOUNT}:${API_KEY}`).toString('base64');
-    const tokenResponse = await getToken(URI, basicAuthorization); 
-    const cancelResponse = await cancel(URI, tokenResponse.token); 
+    const tokenResponse = await getToken(URI, basicAuthorization);
+    const cancelResponse = await cancel(URI, tokenResponse.token, messageKey);
     console.log(cancelResponse);
 }
 
@@ -45,10 +43,10 @@ async function getToken(baseUri, basicAuthorization) {
 }
 
 // 문자 발송 요청 함수
-async function send(baseUri, accessToken) {
+async function send(baseUri, accessToken, to, from, name, content, filePath) {
     const bearerAuthorization = `Bearer ${accessToken}`;
     try {
-        const response = await axios.post(`${baseUri}/v1/message`, createSendTestParams(), {
+        const response = await axios.post(`${baseUri}/v1/message`, createSendTestParams(to, from, name, content, filePath), {
             headers: {
                 Authorization: bearerAuthorization,
                 'Content-Type': 'application/json'
@@ -63,10 +61,10 @@ async function send(baseUri, accessToken) {
 }
 
 // 예약 발송 취소 요청 함수
-async function cancel(baseUri, accessToken) {
+async function cancel(baseUri, accessToken, messageKey) {
     const bearerAuthorization = `Bearer ${accessToken}`;
     try {
-        const response = await axios.post(`${baseUri}/v1/cancel`, createCancelTestParams(), {
+        const response = await axios.post(`${baseUri}/v1/cancel`, createCancelTestParams(messageKey), {
             headers: {
                 Authorization: bearerAuthorization,
                 'Content-Type': 'application/json'
@@ -81,26 +79,25 @@ async function cancel(baseUri, accessToken) {
 }
 
 // 발송 테스트 파라미터 생성 함수
-function createSendTestParams() {
+function createSendTestParams(to, from, name, content, filePath) {
     const sendParams = {
         account: PPURIO_ACCOUNT,
         messageType: 'MMS',
-        from: FROM,
-        content: '[*이름*], hello this is [*1*]',
+        from: from, // 외부에서 전달받은 발신 번호
+        content: content,
         duplicateFlag: 'Y',
         rejectType: 'AD',
         targetCount: 1,
         targets: [{
-            to: '01040997586',
-            name: 'tester',
-            changeWord: { var1: 'ppurio api world' }
+            to: to,
+            name: name
         }],
         refKey: crypto.randomBytes(16).toString('hex')
     };
     
     // 파일이 있을 때만 files 필드 추가
-    if (FILE_PATH) {
-        sendParams.files = [createFileTestParams(FILE_PATH)];
+    if (filePath) {
+        sendParams.files = [createFileTestParams(filePath)];
     }
     return sendParams;
 }
@@ -120,12 +117,13 @@ function createFileTestParams(filePath) {
 }
 
 // 예약 취소 파라미터 생성 함수
-function createCancelTestParams() {
+function createCancelTestParams(messageKey) {
     return {
         account: PPURIO_ACCOUNT,
-        messageKey: '230413110135117SMS029914servsUBn'
+        messageKey: messageKey
     };
 }
 
 // 외부에서 함수를 호출할 수 있도록 모듈 내보내기
 module.exports = { requestSend, requestCancel };
+
