@@ -36,7 +36,7 @@
                     <h6 class="fw-bold mb-3">메시지 입력</h6>
                     <input type="text" id="messageTitle" class="form-control mb-3"
                         placeholder="제목을 입력해주세요. (최대30byte, 발송관리용)">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageModal">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageModal" onclick="generatePrompt()">
                         AI 자동생성
                     </button>
 
@@ -130,7 +130,7 @@
                             aria-labelledby="generateTab">
                             <div class="row">
                                 <!-- Left Column -->
-                                <div class="col-lg-8">
+                                <div class="col-lg-5">
                                     <div class="input-group-custom mb-4">
                                         <!-- <h6 class="section-title mb-3">발송 목적 및 내용</h6>
                                     <textarea class="form-control mb-2" placeholder="발송 목적 및 내용을 입력하세요." rows="4"></textarea>
@@ -152,7 +152,7 @@
                                 </div>
                                 <!-- Right Column -->
                                 <!-- 생성 결과 및 이미지 선택 섹션 -->
-                                <div class="col-lg-4">
+                                <div class="col-lg-7">
                                     <div class="input-group-custom h-100">
                                         <h6 class="section-title mb-3">생성 결과</h6>
                                         <div class="row g-3">
@@ -424,9 +424,10 @@
                 </div>
             </div>
 
-    <script src="scriptweather.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/backend/generateImages.js"></script>
+            <script src="scriptweather.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="/backend/generateImages.js"></script>
+            <script src="/backend/generatePrompt.js"></script>
 </body>
 
 </html>

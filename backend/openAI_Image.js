@@ -86,7 +86,7 @@ router.post('/generate-APIimage', async (req, res) => {
             messages: [{ role: 'user', content: lastPrompt + "From this prompt, please extract one key fashion item and enter it in Korean." }], // lastPrompt에서 키워드 단어를 추출
         });
 
-        const AIKeyword = responseKeyword.choices[0].message.content.trim();
+        const AIKeyword = responseKeyword.choices[0].message.content.replace(/\s+/g, '');
         const keywordURL = `https://www.musinsa.com/search/goods?keyword=${AIKeyword}&keywordType=keyword&gf=A`;
         console.log(`https://www.musinsa.com/search/goods?keyword=${AIKeyword}&keywordType=keyword&gf=A`);
 
@@ -111,3 +111,4 @@ router.post('/generate-APIimage', async (req, res) => {
     }
 });
 
+module.exports = router;
