@@ -195,6 +195,7 @@ body {
     /* 가운데 정렬 */
 }
 
+
 .input-group-custom {
     border: 1px solid #dee2e6;
     /* 테두리 설정 */
@@ -218,6 +219,39 @@ body {
     /* 절대 위치를 위한 상대 위치 설정 */
 }
 
+
+
+
+.byte-counter {
+    position: absolute;
+    /* 절대 위치 설정 */
+    bottom: 8px;
+    /* 하단에서 8px 위로 설정 */
+    right: 12px;
+    /* 오른쪽에서 12px 왼쪽으로 설정 */
+    font-size: 14px;
+    /* 글씨 크기 설정 */
+    color: #6c757d;
+    /* 글씨 색상 설정 */
+}
+
+
+/* 메인 페이지 네비게이션 바  */
+.nav-link {
+    font-weight: bold;
+    /* 기본으로 모든 nav-link에 굵은 글씨 적용 */
+}
+
+/* active 상태에서 색상 변경 */
+.nav-link.active {
+    font-weight: bold;
+    /* active 상태에서 굵은 글씨 유지 */
+    color: #0d6efd;
+    /* active 상태에서 글씨 색상 설정 */
+}
+
+
+/* 생성된 이미지 박스 */
 .image-result-box {
     height: 250px;
     /* 높이 설정 */
@@ -239,51 +273,27 @@ body {
     /* 모서리를 둥글게 설정 */
 }
 
-.byte-counter {
-    position: absolute;
-    /* 절대 위치 설정 */
-    bottom: 8px;
-    /* 하단에서 8px 위로 설정 */
-    right: 12px;
-    /* 오른쪽에서 12px 왼쪽으로 설정 */
-    font-size: 14px;
-    /* 글씨 크기 설정 */
-    color: #6c757d;
-    /* 글씨 색상 설정 */
-}
-
-.nav-link {
-    font-weight: bold;
-    /* 기본으로 모든 nav-link에 굵은 글씨 적용 */
-}
-
-/* active 상태에서 색상 변경 */
-.nav-link.active {
-    font-weight: bold;
-    /* active 상태에서 굵은 글씨 유지 */
-    color: #0d6efd;
-    /* active 상태에서 글씨 색상 설정 */
-}
-
 /* 선택된 이미지 박스에 시각적 표시를 위한 CSS */
 .image-result-box.selected {
     border: 2px solid blue;
     /* 선택된 이미지에 파란색 테두리 추가 */
 }
 
+/*기본 이미지 크기 설정*/
 img {
-    width: 150px;
+    width: 250px;
     /* 이미지 너비를 150px로 설정 */
-    height: 150px;
+    height: 250px;
     /* 이미지 높이를 150px로 설정 */
     object-fit: cover;
     /* 이미지 비율을 유지하며 잘리는 부분 없이 설정된 크기에 맞춤 */
 }
 
+/* 메인 페이지 안 이미지 */
 #imageUploadContainer {
-    width: 150px;
+    width: 200px;
     /* 원하는 크기로 설정 */
-    height: 150px;
+    height: 200px;
     padding: 0;
 }
 
