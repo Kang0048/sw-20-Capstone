@@ -172,21 +172,6 @@ function confirmSelection() {
 }
 
 //이미지 관련 함수
-function deleteImage() {
-    const previewContainer = document.getElementById("imageUploadContainer");
-    const uploadIcon = document.getElementById("uploadIcon");
-    const deleteButton = document.getElementById("deleteImageButton");
-
-    // 미리보기 이미지 제거
-    previewContainer.style.backgroundImage = "none";
-
-    // 업로드 아이콘 다시 표시 및 삭제 버튼 숨기기
-    uploadIcon.style.display = "block";
-    deleteButton.style.display = "none";
-
-    // 파일 입력 필드 초기화
-    document.getElementById("imageInput").value = "";
-}
 // imageUploadContainer 클릭 시 input 클릭
 document.getElementById("imageUploadContainer").addEventListener("click", function () {
     document.getElementById("imageInput").click();
