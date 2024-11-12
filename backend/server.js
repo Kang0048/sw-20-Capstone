@@ -11,6 +11,7 @@ const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
 // 이미지 생성 API 불러오기
 const openAI_Image = require("./openAI_Image"); 
 const openAI_Prompt = require("./openAI_prompt");
+const openAi_UserImage = require("./openAi_userImage");
 
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
@@ -43,6 +44,7 @@ app.get("/", (req, res) => {
 
 app.use('/', openAI_Image);
 app.use('/', openAI_Prompt);
+app.use('/', openAi_UserImage)
 
 // http 실행
 app.listen(port, () => {
