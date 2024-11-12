@@ -1,17 +1,15 @@
 // dotenv 불러오기
 const dotenv = require('dotenv');
 const path = require('path');
-// Cors 불러오기
-const cors = require('cors');
 // express 불러오기
 const express = require("express");
 // openAI 불러오기
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
-
+// 날씨 API
+const { generateImagePrompt } = require('../weather/app');
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
-
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
 if (!openaiApiKey) {
@@ -22,7 +20,9 @@ if (!openaiApiKey) {
 const openai = new OpenAI({
     apiKey: openaiApiKey,
 });
-  
+
+//여기에 불러와서 변수 사용
+
 // express 사용
 const router = express.Router();
 
@@ -33,31 +33,19 @@ router.post('/generate-APIimage', async (req, res) => {
         * 프롬프트는 날씨(최저기온, 최고기온, 평균기온, 날씨)에 맞는 코디 이미지 생성 프롬프트
         * 날씨 api를 통해 받아와서 변수에 저장
         */
-       
-    const minTemp = 5;
-    const avgTemp = 10.4;
-    const sky = "cloudy";
-    const maxTemp = 16;
-
     try {
         // 사용자에게 받은 텍스트
-        const { userInput, userKeyword } = req.body;
-        // 사용자의 입력값에 더해진 새로운 입력값
+        const { userKeyword } = req.body;
+        //날씨 API 객체 불러오기
+        const weatherPrompt = await generateImagePrompt();
+
         let newInput;
-        if(userKeyword != null&& userKeyword.trim() !== ""){
-            newInput = `Please provide your response in English. With an outfit suitable for weather conditions with a minimum 
-            temperature of ${minTemp}°C, an average temperature of ${avgTemp}°C, and a maximum temperature of ${maxTemp}°C. 
-            The weather is described as "${sky}". Just focus on the outfit. Change ${userKeyword} to English and create 
-            an outfit style that includes ${userKeyword}. Recommend an outfit with use ${userInput} that is appropriate 
-            for these temperatures and weather conditions. Additionally, create a background that matches the weather condition 
-            described as "${sky}". Make sure that the length of your response does not exceed 700 characters.`;
-        }else{
-            newInput = `Please provide your response in English. With an outfit suitable for weather conditions with a minimum 
-            temperature of ${minTemp}°C, an average temperature of ${avgTemp}°C, and a maximum temperature of ${maxTemp}°C. 
-            The weather is described as "${sky}".Recommend an outfit with use ${userInput} that is appropriate for these temperatures 
-            and weather conditions. Additionally, create a background that matches the weather condition described as "${sky}".
-            Make sure that the length of your response does not exceed 700 characters.`;
+        if (userKeyword != null && userKeyword.trim() !== "") {
+            newInput = `Please provide an English description of an outfit suitable for weather conditions with a minimum temperature of ${weatherPrompt.minTemp}°C, an average temperature of ${weatherPrompt.avgTemp}°C, and a maximum temperature of ${weatherPrompt.maxTemp}°C. The weather is described as "${weatherPrompt.sky}". Focus on creating an outfit that highlights the seasonal characteristics and includes "${userKeyword}" (please translate it to English if necessary). Additionally, describe a background that complements the "${weatherPrompt.sky}" weather condition and emphasizes the season. Ensure that your response does not exceed 700 characters.`;
+        } else {
+            newInput = `Please provide an English description of an outfit suitable for weather conditions with a minimum temperature of ${weatherPrompt.minTemp}°C, an average temperature of ${weatherPrompt.avgTemp}°C, and a maximum temperature of ${weatherPrompt.maxTemp}°C. The weather is described as "${weatherPrompt.sky}". Focus on creating an outfit that highlights the seasonal characteristics. Additionally, describe a background that complements the "${weatherPrompt.sky}" weather condition and emphasizes the season. Ensure that your response does not exceed 700 characters.`;
         }
+        
         console.log('Input :', newInput); // 프롬프트 로그 출력
 
         
@@ -71,8 +59,8 @@ router.post('/generate-APIimage', async (req, res) => {
         const prompt = response.choices[0].message.content.trim(); // response에서 결과 가져오기
 
         // 수정사항이 추가된 프롬프트
-        let lastPrompt = `${prompt}Create an image of a person from shoulder to end of foot. Focus only on the clothing and shoe,
-        and if the face is visible, paint it black. Never put words, numbers, or text in the image.`
+        let lastPrompt = `Create an image of a person from shoulder to end of foot. Focus only on the clothing and shoe,
+        and if the face is visible, paint it black. Never put words, numbers, or text in the image. ${prompt} `
 
         console.log('Generated Prompt:', lastPrompt); // 프롬프트 출력
           
@@ -83,7 +71,7 @@ router.post('/generate-APIimage', async (req, res) => {
          // 1-1: LLM API에 키워드 추출 요청
         const responseKeyword = await openai.chat.completions.create({
             model: 'gpt-4', // 모델을 gpt-4모델로 설정
-            messages: [{ role: 'user', content: lastPrompt + "From this prompt, please extract one key fashion item and enter it in Korean." }], // lastPrompt에서 키워드 단어를 추출
+            messages: [{ role: 'user', content: lastPrompt + "From this prompt, please extract one key fashion item as a single word and provide it in Korean." }], // lastPrompt에서 키워드 단어를 추출
         });
 
         const AIKeyword = responseKeyword.choices[0].message.content.replace(/\s+/g, '');

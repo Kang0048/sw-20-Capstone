@@ -43,5 +43,4 @@ async function generateImagePrompt() {
     }
 }
 
-// 호출하여 테스트
-generateImagePrompt();
+module.exports = { generateImagePrompt }

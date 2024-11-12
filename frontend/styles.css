@@ -281,9 +281,9 @@ body {
 
 /*기본 이미지 크기 설정*/
 img {
-    width: 250px;
+    width: 240px;
     /* 이미지 너비를 150px로 설정 */
-    height: 250px;
+    height: 240px;
     /* 이미지 높이를 150px로 설정 */
     object-fit: cover;
     /* 이미지 비율을 유지하며 잘리는 부분 없이 설정된 크기에 맞춤 */

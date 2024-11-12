@@ -1,8 +1,6 @@
 // dotenv 불러오기
 const dotenv = require('dotenv');
 const path = require('path');
-// Cors 불러오기
-const cors = require('cors');
 // express 불러오기
 const express = require("express");
 // openAI 불러오기
@@ -22,7 +20,7 @@ if (!openaiApiKey) {
 const openai = new OpenAI({
     apiKey: openaiApiKey,
 });
-  
+
 // express 사용
 const router = express.Router();
 
@@ -35,7 +33,8 @@ router.post('/generate-APIprompt', async (req, res) => {
         const { userInput } = req.body;
         // 사용자의 입력값에 더해진 새로운 입력값
         const newInput = `Please create a promotional message using "${userInput}".
-        The prompt is an advertisement for a clothing shopping mall.
+        The prompt is an advertisement for a clothing shopping mall. 
+        Ensure that the response is structured with clear paragraph breaks for better readability.
         Please write the results in Korean`;
                 
         // 1: LLM API에 프롬프트 요청
