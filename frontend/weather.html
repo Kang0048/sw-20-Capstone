@@ -233,13 +233,13 @@
                                         <h6 class="section-title mb-3">날씨</h6>
                                         <div class="d-flex mb-3">
                                             <input type="text" class="form-control me-2"
-                                                placeholder="날씨를 입력하세요. ex: 따듯함,비,눈">
+                                                placeholder="날씨를 입력하세요. ex: 따듯함,비,눈" id = "userWeather">
                                         </div>
                                         <div class="text-end byte-counter mb-3">0/200byte</div>
                                         <h6 class="section-title mb-3">계절</h6>
                                         <div class="d-flex mb-3">
                                             <input type="text" class="form-control me-2"
-                                                placeholder="계절을 입력하세요. ex: 가을,봄,여름,겨울">
+                                                placeholder="계절을 입력하세요. ex: 가을,봄,여름,겨울" id = "userSeason">
 
                                         </div>
                                         <div class="text-end byte-counter mb-3">0/200byte</div>
@@ -247,14 +247,14 @@
                                         <h6 class="section-title mb-3">아이템 (선택)</h6>
                                         <p class="text-muted">* 아이템 1개를 입력하세요.(ex:청바지, 코트)</p>
                                         <div class="d-flex mb-3">
-                                            <input type="text" id="userKeyword" class="form-control me-2"
-                                                placeholder="입력한 아이템으로 스타일링이 진행됩니다.">
+                                            <input type="text" class="form-control me-2"
+                                                placeholder="입력한 아이템으로 스타일링이 진행됩니다." id="userItem">
                                         </div>
                                     </div>
                                     <div class="input-group-custom">
                                         <h6 class="section-title mb-3">날씨 기반 AI 생성</h6>
                                         <p class="text-muted">입력하신 날씨,계절에 맞는 스타일링 이미지를 AI가 생성합니다.</p>
-                                        <button class="btn btn-custom w-100" onclick="generateImages()">이미지 생성</button>
+                                        <button class="btn btn-custom w-100" onclick="generateUserImages()">이미지 생성</button>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -262,19 +262,19 @@
                                         <h6 class="section-title mb-3">생성 결과</h6>
                                         <div class="row g-3">
                                             <div class="col-5">
-                                                <div class="image-result-box" id="imageBox1"
+                                                <div class="image-result-box" id="userImageBox1"
                                                     onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-5">
-                                                <div class="image-result-box" id="imageBox2"
+                                                <div class="image-result-box" id="userImageBox2"
                                                     onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-5">
-                                                <div class="image-result-box" id="imageBox3"
+                                                <div class="image-result-box" id="userImageBox3"
                                                     onclick="selectImage(this)">+</div>
                                             </div>
                                             <div class="col-5">
-                                                <div class="image-result-box" id="imageBox4"
+                                                <div class="image-result-box" id="userImageBox4"
                                                     onclick="selectImage(this)">+</div>
                                             </div>
                                         </div>
@@ -379,6 +379,7 @@
     <script src="scriptweather.js"></script>
     <script src="/backend/generateImages.js"></script>
     <script src="/backend/generatePrompt.js"></script>
+    <script src="/backend/generateUserImages.js"></script>
 </body>
 
 </html>
