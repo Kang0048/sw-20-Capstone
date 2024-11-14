@@ -5,8 +5,9 @@
 }
 
 .navbar-brand {
-    font-family: 'Lobster', cursive;
+    border-radius: 5px; /* 약간의 둥근 모서리 */
     font-size: 30px;
+    background-color: #f1f7fb;
 }
 
 

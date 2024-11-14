@@ -8,10 +8,11 @@
 .input-group-custom {
     margin: 0 auto; /* 가로 중앙 정렬 */
     padding: 16px;
-    background-color: #ffffff;
+    background-color: #f7f8fa;
     border: 1px solid #dee2e6;
     border-radius: 8px;
 }
+
 .textarea-container {
     position: relative;
     margin-top: 10px;

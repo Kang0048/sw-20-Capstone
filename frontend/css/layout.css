@@ -16,6 +16,13 @@
     padding: 20px;
     border-radius: 8px;
 }
+.modal-body-message {
+    padding-left: 20px;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: row; /* 옆으로 배열 */
+    height: 100%;
+}
 
 .input-section {
     flex: 2;
@@ -40,6 +47,7 @@
     /* 내부 여백 설정 */
     border-radius: 8px;
     /* 모서리를 둥글게 설정 */
+    font-size: 1.3rem;
 }
 .section-title {
     font-weight: bold;
