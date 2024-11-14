@@ -1,21 +1,46 @@
-// app.js
+const { getWeatherData } = require('./weather'); // weatherService 파일을 import
 
-const { getWeatherData } = require('./weather');
-
-// 실행 함수
-async function run() {
+async function generateImagePrompt() {
     try {
+        // 날씨 데이터 가져오기 (서울 좌표 예시 사용)
         const weatherData = await getWeatherData();
-        console.log('예측 평균 기온 (TMP):', weatherData.avgTemp);
-        console.log('예측 최저 기온 (TMN):', weatherData.minTemp);
-        console.log('예측 최고 기온 (TMX):', weatherData.maxTemp);
-        //01 맑음 //02 구름 조금 //03 구름 많이 //04 흐림
-        console.log('예측 하늘 상태 (SKY):', weatherData.sky); 
-        console.log('예측 강수 확률 (POP):', weatherData.pop);
+
+        // 날씨 정보에 따라 프롬프트 구성
+        const { avgTemp, minTemp, maxTemp, sky, pop } = weatherData;
+
+        // 기본 프롬프트 설정
+        let prompt = `Today's weather: `;
+
+        // 프롬프트에 조건 추가
+        prompt += `${sky}, `;
+        prompt += `Average temperature is ${avgTemp}°C, `;
+        prompt += `Minimum temperature is ${minTemp}°C, `;
+        prompt += `Maximum temperature is ${maxTemp}°C, `;
+        prompt += `Chance of rain is ${pop}%.`;
+
+        // 이미지 스타일 및 배경 텍스트
+        let stylePrompt = '';
+        if (sky === '맑음') {
+            stylePrompt = 'a bright, sunny scene with clear skies';
+        } else if (sky === '구름 조금') {
+            stylePrompt = 'a slightly cloudy sky with sunshine peeking through';
+        } else if (sky === '구름 적당히') {
+            stylePrompt = 'a moderately cloudy sky with some sunlight';
+        } else if (sky === '구름 많이') {
+            stylePrompt = 'an overcast scene with dense clouds';
+        } else if (sky === '흐림') {
+            stylePrompt = 'a cloudy and overcast day';
+        }
+
+        // 최종 이미지 프롬프트
+        const finalPrompt = `${prompt} The image should depict ${stylePrompt}.`;
+
+        console.log(finalPrompt);
+        return finalPrompt;
+
     } catch (error) {
-        console.error('오류:', error.message);
+        console.error('Error generating image prompt:', error);
     }
 }
 
-// 실행
-run();
+module.exports = { generateImagePrompt }

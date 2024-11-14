@@ -1,29 +1,37 @@
-// weatherService.js
-
 const request = require('request');
 const moment = require('moment');
 
 const serviceKey = 'u9djILD%2FxDioJMqtlTR7n0xl4ALy0rrGF4nyTKdGmAGZQ5PREnq4VbkP1wNnBf21m7XDE8mDDqI74NJEPjX2jQ%3D%3D';
 
-// 기본 좌표 설정
 const defaultStationX = 55; // 기본 예보지점 X 좌표 (예: 서울)
 const defaultStationY = 127; // 기본 예보지점 Y 좌표 (예: 서울)
+
+// SKY 코드 매핑
+const skyCodeMapping = {
+    '0': '맑음',
+    '1': '구름 조금',
+    '2': '구름 적당히',
+    '3': '구름 많이',
+    '4': '흐림'
+};
 
 // 날씨 데이터 요청 함수
 async function getWeatherData(stationX = defaultStationX, stationY = defaultStationY) {
     const today = moment().format('YYYYMMDD');
 
     try {
-        const [data0200, data1100] = await Promise.all([requestData(today, '0200', stationX, stationY), requestData(today, '1100', stationX, stationY)]);
+        const [data0200, data1100] = await Promise.all([
+            requestData(today, '0200', stationX, stationY),
+            requestData(today, '1100', stationX, stationY)
+        ]);
 
         // 데이터 정리
         const minTemp = data0200.minTemp;
         const avgTemp = data0200.avgTemp;
-        const sky = data0200.sky;
+        const sky = skyCodeMapping[data0200.sky] || '알 수 없음'; // 매핑 적용
         const maxTemp = data1100.maxTemp;
         const pop = data1100.pop;
 
-        // 결과 반환
         return {
             avgTemp,
             minTemp,
@@ -76,5 +84,4 @@ function requestData(baseDate, baseTime, stationX, stationY) {
     });
 }
 
-// 외부에서 사용할 수 있도록 함수 내보내기
 module.exports = { getWeatherData };

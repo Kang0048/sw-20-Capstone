@@ -36,8 +36,8 @@ async function generateImages() {
 
     // keywordURL을 올바르게 표시
     if (data.keywordURL) {
-        document.getElementById("url").innerHTML = data.keywordURL;
+        document.getElementById(`.display-message`).innerHTML = `\nURL: ${data.keywordURL}`;
     } else {
-        document.getElementById("url").innerHTML = "No URL";
+        document.getElementById(`.display-message`).innerHTML = `No URL`;
     }
 }

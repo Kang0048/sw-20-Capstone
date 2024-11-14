@@ -15,6 +15,6 @@ async function generatePrompt() {
     if(data.prompt)
         document.getElementById(`messageContent`).innerHTML = data.prompt;
     else
-    document.getElementById(`messageContent`).innerHTML = "출력 오류";
+        document.getElementById(`messageContent`).innerHTML = "출력 오류";
     
 }
