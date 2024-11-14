@@ -1,0 +1,22 @@
+/* 모달 관련 스타일 */
+.modal-dialog {
+    max-width: 90%;
+}
+
+.modal-content {
+    width: 100%;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+#PhoneModal .modal-dialog.custom-width {
+    max-width: 300px;
+}
+
+.modal-title {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #1a73e8;
+}

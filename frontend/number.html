@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>번호 등록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link href="./css/navbar.css" rel="stylesheet">
+    <link href="./css/button.css" rel="stylesheet">
+    <link href="./css/modal.css" rel="stylesheet">
+    <link href="./css/form.css" rel="stylesheet">
+    <link href="./css/image.css" rel="stylesheet">
+    <link href="./css/layout.css" rel="stylesheet">
+    <link href="./css/message_history.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- 네비게이션 바 -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <a class="navbar-brand" href="#">CloudPost20</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="weather.html">날씨 기반 문자</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="number.html">번호 등록</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="message_history.html">보낸 메세지</a>
+                </li>
+            </ul>
+            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+                Login
+            </button>
+        </div>
+    </nav>
+
+    <!-- 메인 컨테이너 -->
+    <div class="main-container container-fluid my-4">
+        <h2>번호 등록</h2>
+        <form id="registerForm" class="mt-3">
+            <div class="mb-3">
+                <label for="name" class="form-label">이름</label>
+                <input type="text" class="form-control" id="name" placeholder="이름을 입력하세요" required>
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">전화번호</label>
+                <input type="tel" class="form-control" id="phone" placeholder="전화번호를 입력하세요" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일</label>
+                <input type="email" class="form-control" id="email" placeholder="이메일을 입력하세요" required>
+            </div>
+            <button type="submit" class="btn btn-primary">저장</button>
+        </form>
+
+        <!-- 등록된 번호 목록 -->
+        <div class="mt-5">
+            <h3>등록된 번호 목록</h3>
+            <ul id="contactList" class="list-group">
+                <!-- 연락처 항목들이 추가될 위치 -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- 번호 등록 및 저장 스크립트 -->
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // 폼 제출 시 페이지 새로고침 방지
+
+            // 입력 필드 값 가져오기
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+
+            // 새 연락처 항목 생성
+            const contactItem = document.createElement('li');
+            contactItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            contactItem.innerHTML = `
+                <div>
+                    <strong>${name}</strong><br>
+                    <span>전화번호: ${phone}</span><br>
+                    <span>이메일: ${email}</span>
+                </div>
+                <button class="btn btn-danger btn-sm delete-btn">삭제</button>
+            `;
+
+            // 연락처 목록에 추가
+            document.getElementById('contactList').appendChild(contactItem);
+
+            // 삭제 버튼 이벤트 추가
+            contactItem.querySelector('.delete-btn').addEventListener('click', function () {
+                contactItem.remove();
+            });
+
+            // 입력 필드 초기화
+            document.getElementById('registerForm').reset();
+        });
+    </script>
+</body>
+
+</html>

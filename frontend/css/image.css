@@ -1,0 +1,62 @@
+/* 이미지 업로드 및 미리보기 스타일 */
+#imageUploadContainer {
+    width: 200px;
+    height: 200px;
+    padding: 0;
+    border: 2px dashed #ced4da;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+#imageUploadContainer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 이미지가 잘리지 않고 container에 맞게 채워짐 */
+    border-radius: 8px;
+    /* 둥근 모서리 추가 */
+}
+
+#uploadIcon {
+    font-size: 2rem;
+    color: #6c757d;
+}
+
+.image-result-box {
+    height: 250px;
+    width: 250px;
+    border: 1px dashed #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 2rem;
+    border-radius: 8px;
+}
+
+.image-result-box.selected {
+    border: 2px solid blue;
+}
+
+/* 로딩 애니메이션 */
+.loading-spinner {
+    font-size: 1rem;
+    color: #007bff;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+img {
+    width: 240px;
+    /* 이미지 너비를 150px로 설정 */
+    height: 240px;
+    /* 이미지 높이를 150px로 설정 */
+    object-fit: cover;
+    /* 이미지 비율을 유지하며 잘리는 부분 없이 설정된 크기에 맞춤 */
+}

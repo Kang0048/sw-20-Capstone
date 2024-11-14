@@ -1,0 +1,33 @@
+.weather-widget {
+    width: 180px;
+    height: 180px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    position: absolute;
+    bottom: 50px; /* 모달 내부에서 아래쪽 위치 */
+    left: 30px; /* 모달 내부에서 왼쪽 위치 */
+}
+
+.weather-widget .location {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.weather-widget .avgTemp {
+    font-size: 36px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.weather-widget .sky {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.weather-widget .temp-range {
+    font-size: 12px;
+}

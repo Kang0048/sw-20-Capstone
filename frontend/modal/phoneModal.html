@@ -1,0 +1,41 @@
+<!-- 핸드폰 발신 번호 등록 페이지 -->
+<div class="modal fade" id="PhoneModal" tabindex="-1" aria-labelledby="PhoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-width modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="PhoneModalLabel">발신번호 신규 등록</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="p-3 rounded">
+                    <!-- 통신사 선택 -->
+                    <div class="mb-3">
+                        <label for="carrierSelect" class="form-label">통신사</label>
+                        <select id="carrierSelect" class="form-select" aria-label="통신사 선택">
+                            <option selected>통신사 선택</option>
+                            <option value="1">SKT</option>
+                            <option value="2">KT</option>
+                            <option value="3">LG U+</option>
+                        </select>
+                    </div>
+
+                    <!-- 발신번호 입력 -->
+                    <div class="mb-3">
+                        <label for="phoneNumberInput" class="form-label">발신번호</label>
+                        <input type="text" class="form-control" id="phoneNumberInput" placeholder="발신번호를 입력해주세요.">
+                    </div>
+
+                    <!-- 발신번호 명의자 입력 -->
+                    <div class="mb-3">
+                        <label for="ownerInput" class="form-label">발신번호 명의자</label>
+                        <input type="text" class="form-control" id="ownerInput" placeholder="명의자를 입력해주세요.">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" id="registerPhoneNumber">등록</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+/* 폼 입력 및 레이아웃 스타일 */
+.input-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.input-group-custom {
+    margin: 0 auto; /* 가로 중앙 정렬 */
+    padding: 16px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+}
+.textarea-container {
+    position: relative;
+    margin-top: 10px;
+}
+
+#messageContent1 {
+    width: 100%;
+    resize: none;
+}
+
+.byte-counter {
+    position: absolute;
+    bottom: 8px;
+    right: 12px;
+    font-size: 14px;
+    color: #6c757d;
+}

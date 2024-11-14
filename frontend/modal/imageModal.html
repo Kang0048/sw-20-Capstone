@@ -1,0 +1,175 @@
+<!-- 자동 이미지 생성 페이지 -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <ul class="nav nav-tabs" id="imageModalTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="generateTab" data-bs-toggle="tab"
+                            data-bs-target="#generate" type="button" role="tab" aria-controls="generate"
+                            aria-selected="true">현재 날씨 스타일링</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="weatherTab" data-bs-toggle="tab" data-bs-target="#weather"
+                            type="button" role="tab" aria-controls="weather" aria-selected="false">날씨 직접 입력</button>
+                    </li>
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!--
+                <div id="loadingOverlay" class="loading-overlay">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p>이미지 생성 중...</p>
+                </div>-->
+                <div class="tab-content" id="imageModalContent">
+                    <!-- 현재 날씨 스타일링 탭 -->
+                    <div class="tab-pane fade show active" id="generate" role="tabpanel" aria-labelledby="generateTab">
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-lg-5">
+                                <div class="input-group-custom mb-4">
+                                    <h6 class="section-title mb-3">아이템 (선택)</h6>
+                                    <p class="text-muted">* 아이템 1개를 입력 후 추가를 누르세요.(ex:청바지, 코트)</p>
+                                    <div class="d-flex mb-3">
+                                        <input type="text" id="userKeyword" class="form-control me-2"
+                                            placeholder="입력한 아이템으로 스타일링이 진행됩니다.">
+                                    </div>
+                                    <h6 class="section-title mb-3">성별 (선택)</h6>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+                                            <label class="form-check-label" for="male">남성</label>
+                                        </div>
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                                            <label class="form-check-label" for="female">여성</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group-custom">
+                                    <h6 class="section-title mb-3">AI 자동 생성</h6>
+                                    <p class="text-muted">현재 계절, 날씨를 반영하여 스타일링 이미지를 AI가 생성합니다.</p>
+                                    <button class="btn btn-custom w-100" onclick="generateImages()">이미지 생성</button>
+                                </div>
+                                 <!-- 날씨 위젯 -->
+                                <div class="weather-widget">
+                                    <div class="location">서울특별시</div>
+                                    <div class="avgTemp" id="avgTemp">13°</div>
+                                    <div class="sky" id="sky">흐림</div>
+                                    <div class="temp-range">
+                                        최고: <span id="maxTemp">18°</span> 최저: <span id="minTemp">10°</span>
+                                </div>
+                                </div>
+                            </div>
+                            <!-- Right Column -->
+                            <div class="col-lg-6">
+                                <div class="input-group-custom h-100">
+                                    <h6 class="section-title mb-3">생성 결과</h6>
+                                    <div class="row g-3 justify-content-center">
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox1" onclick="selectImage(this)">+</div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox2" onclick="selectImage(this)">+</div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox3" onclick="selectImage(this)">+</div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox4" onclick="selectImage(this)">+</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <button class="btn btn-secondary w-100 mt-4"
+                                        onclick="confirmSelection()">확정</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 날씨 직접 입력 탭 -->
+                    <div class="tab-pane fade" id="weather" role="tabpanel" aria-labelledby="weatherTab">
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-lg-5">
+                                <div class="input-group-custom mb-4">
+                                    <h6 class="section-title mb-3">날씨</h6>
+                                    <div class="d-flex mb-3">
+                                        <input type="text" class="form-control me-2"
+                                            placeholder="날씨를 입력하세요. ex: 따듯함, 비, 눈" id="userWeather">
+                                    </div>
+                                    <h6 class="section-title mb-3">계절</h6>
+                                    <div class="d-flex mb-3">
+                                        <input type="text" class="form-control me-2"
+                                            placeholder="계절을 입력하세요. ex: 가을, 봄, 여름, 겨울" id="userSeason">
+                                    </div>
+                                    <h6 class="section-title mb-3">아이템 (선택)</h6>
+                                    <p class="text-muted">* 아이템 1개를 입력하세요. (ex: 청바지, 코트)</p>
+                                    <div class="d-flex mb-3">
+                                        <input type="text" class="form-control me-2"
+                                            placeholder="입력한 아이템으로 스타일링이 진행됩니다." id="userItem">
+                                    </div>
+                                    <h6 class="section-title mb-3">성별 (선택)</h6>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+                                            <label class="form-check-label" for="male">남성</label>
+                                        </div>
+                                        <div class="form-check me-3">
+                                            <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                                            <label class="form-check-label" for="female">여성</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group-custom">
+                                    <h6 class="section-title mb-3">날씨 기반 AI 생성</h6>
+                                    <p class="text-muted">입력하신 날씨, 계절에 맞는 스타일링 이미지를 AI가 생성합니다.</p>
+                                    <button class="btn btn-custom w-100" onclick="generateUserImages()">이미지 생성</button>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="input-group-custom h-100">
+                                    <h6 class="section-title mb-3">생성 결과</h6>
+                                    <div class="row g-3 justify-content-center">
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox1" onclick="selectImage(this)">+</div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox2" onclick="selectImage(this)">+</div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox3" onclick="selectImage(this)">+</div>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="image-result-box" id="imageBox4" onclick="selectImage(this)">+</div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary w-100 mt-4"
+                                        onclick="confirmSelection()">확정</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const weatherData = {
+        avgTemp: 13,
+        minTemp: 10,
+        maxTemp: 18,
+        sky: "흐림",
+        pop: 60
+    };
+
+    document.getElementById('avgTemp').innerText = `${weatherData.avgTemp}°`;
+    document.getElementById('minTemp').innerText = `${weatherData.minTemp}°`;
+    document.getElementById('maxTemp').innerText = `${weatherData.maxTemp}°`;
+    document.getElementById('sky').innerText = weatherData.sky;
+</script>

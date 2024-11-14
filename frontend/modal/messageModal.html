@@ -1,0 +1,38 @@
+<!-- 메세지 자동 생성 페이지 -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="height: 90vh;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">AI 자동 생성</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Left Section -->
+                <div class="input-section">
+                    <h6 class="section-title">발송 목적 및 내용</h6>
+                    <input type="text" id="messageTitle" class="form-control mb-2"
+                        placeholder="ex > 겨울 맞이 30% 할인 프로모션 진행, 블랙프라이데이 진행 최대 80% 할인" rows="4">
+                    <h6 class="section-title mb-3">중요 키워드 (선택)</h6>
+                    <p class="text-muted">* 키워드 1개 입력 하세요.</p>
+                    <div class="d-flex mb-3">
+                        <input type="text" class="form-control me-2" placeholder="입력한 키워드가 생성결과에 포함될 확률이 높아집니다.">
+                    </div>
+
+                    <button class="btn btn-custom" onclick="generatePrompt()">AI 생성</button>
+                </div>
+
+                <!-- Right Section -->
+                <div class="result-section">
+                    <label for="messageContent" style="font-weight: bold;">생성결과</label>
+                    <div id="messageContent">
+                        생성결과가 없습니다.
+                    </div>
+                    <button class="confirm-btn" onclick="confirmMessage()">확정</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
