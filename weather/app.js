@@ -14,7 +14,8 @@ function generateImagePrompt(weatherData) {
 }
 
 // 실행 함수
-async function generateWeather(location) {
+async function generateWeather( location ) {
+    
     try {
         const weatherData = await getWeatherData(location);
 
