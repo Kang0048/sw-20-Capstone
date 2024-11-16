@@ -11,8 +11,11 @@ const locationMapping = {
     daejeon: { x: 67, y: 100 },
     busan: { x: 98, y: 75 },
     ulsan: { x: 102, y: 84 },
-    incheon: { x: 54, y: 125 }
+    incheon: { x: 54, y: 125 },
+    sejong: { x: 66, y: 103 }, 
+    jeju: { x: 52, y: 38 }    
 };
+
 
 // SKY 코드 매핑 (범위 기반, 영어)
 function mapSkyCode(skyCode) {
@@ -29,6 +32,24 @@ function mapSkyCode(skyCode) {
     }
 }
 
+// PTY 결정 함수
+function determinePty(ptyValues, skyValue) {
+    const counts = { clear: 0, rain: 0, snow: 0 };
+
+    ptyValues.forEach(pty => {
+        switch (pty) {
+            case '0': counts.clear++; break;
+            case '1': case '2': case '4': counts.rain++; break;
+            case '3': counts.snow++; break;
+        }
+    });
+
+    if (counts.rain === 0 && counts.snow === 0) return mapSkyCode(skyValue); // SKY 상태 사용
+    if (counts.rain > counts.snow) return 'Rain';
+    if (counts.snow > counts.rain) return 'Snow';
+    return 'Rain'; // Default to Rain if counts are equal
+}
+
 // 날씨 데이터 요청 함수
 async function getWeatherData(location = 'seoul') {
     const today = moment().format('YYYYMMDD');
@@ -37,17 +58,27 @@ async function getWeatherData(location = 'seoul') {
     const { x: stationX, y: stationY } = locationMapping[location] || locationMapping.seoul;
 
     try {
-        const [data0200, data1100] = await Promise.all([
+        const allData = await Promise.all([
             requestData(today, '0200', stationX, stationY),
-            requestData(today, '1100', stationX, stationY)
+            requestData(today, '0500', stationX, stationY),
+            requestData(today, '0800', stationX, stationY),
+            requestData(today, '1100', stationX, stationY),
+            requestData(today, '1400', stationX, stationY),
+            requestData(today, '1700', stationX, stationY),
+            requestData(today, '2000', stationX, stationY),
         ]);
 
+        // PTY 결정
+        const ptyValues = allData.map(data => data.pty);
+        const skyValue = allData[5].sky; // SKY 값 가져오기
+        const pty = determinePty(ptyValues, skyValue);
+
         // 데이터 정리
-        const minTemp = data0200.minTemp;
-        const avgTemp = data0200.avgTemp;
-        const sky = mapSkyCode(data0200.sky); // 범위 기반 SKY 매핑 적용
-        const maxTemp = data1100.maxTemp;
-        const pop = data1100.pop;
+        const minTemp = allData[0].minTemp;
+        const avgTemp = allData[2].avgTemp;
+        const sky = mapSkyCode(allData[5].sky); // SKY 매핑 적용
+        const maxTemp = allData[3].maxTemp;
+        const pop = allData[5].pop;
 
         return {
             location,
@@ -55,7 +86,8 @@ async function getWeatherData(location = 'seoul') {
             minTemp,
             maxTemp,
             sky,
-            pop
+            pop,
+            pty
         };
     } catch (error) {
         throw new Error('데이터 요청 중 오류 발생: ' + error);
@@ -78,7 +110,7 @@ function requestData(baseDate, baseTime, stationX, stationY) {
                     if (data.response && data.response.body && data.response.body.items && data.response.body.items.item) {
                         const items = data.response.body.items.item;
 
-                        let tempData = { minTemp: null, maxTemp: null, avgTemp: null, sky: null, pop: null };
+                        let tempData = { minTemp: null, maxTemp: null, avgTemp: null, sky: null, pop: null, pty: null };
 
                         items.forEach(item => {
                             if (item.category === 'TMP' && !tempData.avgTemp) tempData.avgTemp = item.fcstValue;
@@ -86,6 +118,7 @@ function requestData(baseDate, baseTime, stationX, stationY) {
                             if (item.category === 'TMX' && !tempData.maxTemp) tempData.maxTemp = item.fcstValue;
                             if (item.category === 'SKY' && !tempData.sky) tempData.sky = item.fcstValue;
                             if (item.category === 'POP' && !tempData.pop) tempData.pop = item.fcstValue;
+                            if (item.category === 'PTY' && !tempData.pty) tempData.pty = item.fcstValue;
                         });
 
                         resolve(tempData);
