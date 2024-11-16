@@ -3,21 +3,38 @@ const moment = require('moment');
 
 const serviceKey = 'u9djILD%2FxDioJMqtlTR7n0xl4ALy0rrGF4nyTKdGmAGZQ5PREnq4VbkP1wNnBf21m7XDE8mDDqI74NJEPjX2jQ%3D%3D';
 
-const defaultStationX = 55; // 기본 예보지점 X 좌표 (예: 서울)
-const defaultStationY = 127; // 기본 예보지점 Y 좌표 (예: 서울)
-
-// SKY 코드 매핑
-const skyCodeMapping = {
-    '0': '맑음',
-    '1': '구름 조금',
-    '2': '구름 적당히',
-    '3': '구름 많이',
-    '4': '흐림'
+// 지역별 X, Y 좌표 매핑
+const locationMapping = {
+    seoul: { x: 55, y: 127 },
+    gwangju: { x: 59, y: 74 },
+    daegu: { x: 89, y: 91 },
+    daejeon: { x: 67, y: 100 },
+    busan: { x: 98, y: 75 },
+    ulsan: { x: 102, y: 84 },
+    incheon: { x: 54, y: 125 }
 };
 
+// SKY 코드 매핑 (범위 기반, 영어)
+function mapSkyCode(skyCode) {
+    if (skyCode === '0') {
+        return 'Clear';
+    } else if (['1', '2', '3', '4'].includes(skyCode)) {
+        return 'Partly Cloudy';
+    } else if (['5', '6', '7', '8'].includes(skyCode)) {
+        return 'Mostly Cloudy';
+    } else if (['9', '10'].includes(skyCode)) {
+        return 'Overcast';
+    } else {
+        return 'Unknown';
+    }
+}
+
 // 날씨 데이터 요청 함수
-async function getWeatherData(stationX = defaultStationX, stationY = defaultStationY) {
+async function getWeatherData(location = 'seoul') {
     const today = moment().format('YYYYMMDD');
+
+    // 설정된 지역의 좌표 가져오기
+    const { x: stationX, y: stationY } = locationMapping[location] || locationMapping.seoul;
 
     try {
         const [data0200, data1100] = await Promise.all([
@@ -28,11 +45,12 @@ async function getWeatherData(stationX = defaultStationX, stationY = defaultStat
         // 데이터 정리
         const minTemp = data0200.minTemp;
         const avgTemp = data0200.avgTemp;
-        const sky = skyCodeMapping[data0200.sky] || '알 수 없음'; // 매핑 적용
+        const sky = mapSkyCode(data0200.sky); // 범위 기반 SKY 매핑 적용
         const maxTemp = data1100.maxTemp;
         const pop = data1100.pop;
 
         return {
+            location,
             avgTemp,
             minTemp,
             maxTemp,
