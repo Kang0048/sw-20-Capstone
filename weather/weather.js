@@ -30,11 +30,11 @@ function mapSkyCode(skyCode) {
 }
 
 // 날씨 데이터 요청 함수
-async function getWeatherData(location = 'seoul') {
+async function getWeatherData(location) {
     const today = moment().format('YYYYMMDD');
 
     // 설정된 지역의 좌표 가져오기
-    const { x: stationX, y: stationY } = locationMapping[location] || locationMapping.seoul;
+    const { x: stationX, y: stationY } = locationMapping[location] || locationMapping.seoul; //location, default:seoul
 
     try {
         const [data0200, data1100] = await Promise.all([

@@ -35,7 +35,7 @@ router.post('/generate-APIprompt', async (req, res) => {
         const newInput = `Please create a promotional message using "${userInput}".
         The prompt is an advertisement for a clothing shopping mall. 
         Ensure that the response is structured with clear paragraph breaks for better readability.
-        Please write the results in Korean`;
+        Please write the results in Korean. Ensure that your response does not exceed 200 characters.`;
                 
         // 1: LLM API에 프롬프트 요청
         const response = await openai.chat.completions.create({

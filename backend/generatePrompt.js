@@ -13,7 +13,7 @@ async function generatePrompt() {
     const data = await response.json();
 
     if(data.prompt)
-        document.getElementById(`messageContent`).innerHTML = data.prompt;
+        document.getElementById(`messageContent`).innerHTML = `${data.prompt}`;
     else
         document.getElementById(`messageContent`).innerHTML = "출력 오류";
     

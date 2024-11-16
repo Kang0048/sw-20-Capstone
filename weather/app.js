@@ -11,23 +11,16 @@ function generateImagePrompt(weatherData) {
 }
 
 // 실행 함수
-async function main() {
-    const location = 'gwangju'; // 기본 지역 설정. 다른 지역 사용 시 이름 변경 ('gwangju', 'daegu' 등)
+async function generateWeather( location ) {
     
     try {
-
         const weatherData = await getWeatherData(location);
         const prompt = generateImagePrompt(weatherData);
-        console.log(prompt);
-
-        // 이미지 생성 API 호출 로직 (예제)
-        // const imageResponse = await generateImage(prompt);
-        // console.log('Generated Image:', imageResponse);
-
+        return prompt;
     } catch (error) {
         console.error('Error:', error.message);
     }
 }
 
 // 실행
-main();
+module.exports = { generateWeather };

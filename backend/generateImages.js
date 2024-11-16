@@ -1,13 +1,14 @@
 // generateImages.js
 async function generateImages() {
     const userKeyword = document.getElementById('userKeyword').value;
+    const userLoc = document.getElementById('region').value;
 
     const response = await fetch('http://127.0.0.1:5000/generate-APIimage', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userKeyword: userKeyword })
+        body: JSON.stringify({ userKeyword: userKeyword, userLoc: userLoc})
     });
 
     const data = await response.json();
@@ -36,8 +37,11 @@ async function generateImages() {
 
     // keywordURL을 올바르게 표시
     if (data.keywordURL) {
-        document.getElementById(`.display-message`).innerHTML = `\nURL: ${data.keywordURL}`;
+        console.log(data.keywordURL);
+        document.getElementById(`messageContent1`).innerHTML = `\nURL: ${data.keywordURL}`;
     } else {
-        document.getElementById(`.display-message`).innerHTML = `No URL`;
+        document.getElementById(`messageContent1`).innerHTML = `No URL`;
     }
 }
+
+module.exports = { generateImages };
