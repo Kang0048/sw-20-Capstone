@@ -30,7 +30,7 @@ router.post('/generate-userImage', async (req, res) => {
   console.log('Request received:', req.body); // 요청 로그 출력
   try {
     // 사용자에게 받은 텍스트
-    const { userInput, userSeason, userWeather, userItem } = req.body;
+    const { userInput, userSeason, userWeather, userItem, userSex } = req.body;
     console.log('사용자 입력 프롬프트: ', userInput);
     // 1: LLM API에 프롬프트 요청
     const response = await openai.chat.completions.create({
@@ -38,11 +38,25 @@ router.post('/generate-userImage', async (req, res) => {
       messages: [
         {
           role: 'system',
-          content: `"You are a fashion assistant that generates detailed image prompts based on the season, weather, item, and prompt components provided by the user. The image should depict a male model wearing the specified outfit, with a background that reflects the season and weather. Make sure that the length of your response does not exceed 700 characters. Ensure there is absolutely no text in the image. Ensure that only the lower part of a person's face is visible in the image, and that the area below the model's face is fully shown in the photo "`,
+          content: `
+            You are a fashion assistant that generates highly detailed image prompts for a fashion image generator AI. 
+            The prompt should describe a stylish outfit based on season, weather, sex, and specified item. 
+            Ensure the image depicts a full-body view from the lower part of the face down to the shoes. 
+            Include all relevant details about clothing, colors, materials, and accessories to make the outfit look fashionable. 
+            The background should reflect the season and weather. 
+            Ensure there is no text in the image. The prompt must not exceed 1000 characters.
+          `,
         },
         {
           role: 'user',
-          content: `Please provide your response in English. Make detail prompt with using ${userInput}Season: ${userSeason}. Weather: ${userWeather}. User item: ${userItem}`,
+          content: `
+            Generate a detailed image prompt using the following details: 
+            User input: "${userInput}". 
+            Season: ${userSeason}. 
+            Weather: ${userWeather}. 
+            Item: ${userItem}. 
+            Gender: ${userSex}.
+          `,
         },
       ],
     });
