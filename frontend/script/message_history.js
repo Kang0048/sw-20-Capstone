@@ -1,13 +1,4 @@
-// 서버에서 메시지 데이터를 가져와 렌더링하는 함수
-function fetchMessages() {
-    // 서버로부터 데이터를 가져오는 AJAX 요청 (예제 URL로 변경 필요)
-    fetch('/api/messages') // 데이터베이스에서 메시지 데이터를 가져올 API 엔드포인트
-        .then(response => response.json())
-        .then(data => {
-            renderMessages(data);
-        })
-        .catch(error => console.error('Error fetching messages:', error));
-}
+
 
 // 메시지를 HTML에 렌더링하는 함수
 function renderMessages(messages) {
@@ -31,8 +22,6 @@ function renderMessages(messages) {
     });
 }
 
-// 페이지 로드 시 메시지 데이터를 가져옵니다.
-document.addEventListener('DOMContentLoaded', fetchMessages);
 
 // 검색 기능 추가
 function searchMessages() {
