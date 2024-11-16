@@ -1,46 +1,33 @@
-const { getWeatherData } = require('./weather'); // weatherService 파일을 import
+const { getWeatherData } = require('./weather'); // weatherService.js 파일에서 함수 가져오기
 
-async function generateImagePrompt() {
+// 이미지 프롬프트 생성 함수
+function generateImagePrompt(weatherData) {
+    const { sky, avgTemp, minTemp, maxTemp, location } = weatherData;
+
+    // 날씨 상태에 따라 프롬프트 생성
+    const prompt = `A ${sky.toLowerCase()} day in ${location}, with an average temperature of ${avgTemp}°C, ranging from a low of ${minTemp}°C to a high of ${maxTemp}°C.`;
+
+    return prompt;
+}
+
+// 실행 함수
+async function main() {
+    const location = 'gwangju'; // 기본 지역 설정. 다른 지역 사용 시 이름 변경 ('gwangju', 'daegu' 등)
+    
     try {
-        // 날씨 데이터 가져오기 (서울 좌표 예시 사용)
-        const weatherData = await getWeatherData();
 
-        // 날씨 정보에 따라 프롬프트 구성
-        const { avgTemp, minTemp, maxTemp, sky, pop } = weatherData;
+        const weatherData = await getWeatherData(location);
+        const prompt = generateImagePrompt(weatherData);
+        console.log(prompt);
 
-        // 기본 프롬프트 설정
-        let prompt = `Today's weather: `;
-
-        // 프롬프트에 조건 추가
-        prompt += `${sky}, `;
-        prompt += `Average temperature is ${avgTemp}°C, `;
-        prompt += `Minimum temperature is ${minTemp}°C, `;
-        prompt += `Maximum temperature is ${maxTemp}°C, `;
-        prompt += `Chance of rain is ${pop}%.`;
-
-        // 이미지 스타일 및 배경 텍스트
-        let stylePrompt = '';
-        if (sky === '맑음') {
-            stylePrompt = 'a bright, sunny scene with clear skies';
-        } else if (sky === '구름 조금') {
-            stylePrompt = 'a slightly cloudy sky with sunshine peeking through';
-        } else if (sky === '구름 적당히') {
-            stylePrompt = 'a moderately cloudy sky with some sunlight';
-        } else if (sky === '구름 많이') {
-            stylePrompt = 'an overcast scene with dense clouds';
-        } else if (sky === '흐림') {
-            stylePrompt = 'a cloudy and overcast day';
-        }
-
-        // 최종 이미지 프롬프트
-        const finalPrompt = `${prompt} The image should depict ${stylePrompt}.`;
-
-        console.log(finalPrompt);
-        return finalPrompt;
+        // 이미지 생성 API 호출 로직 (예제)
+        // const imageResponse = await generateImage(prompt);
+        // console.log('Generated Image:', imageResponse);
 
     } catch (error) {
-        console.error('Error generating image prompt:', error);
+        console.error('Error:', error.message);
     }
 }
 
-module.exports = { generateImagePrompt }
+// 실행
+main();
