@@ -14,8 +14,7 @@ function generateImagePrompt(weatherData) {
 }
 
 // 실행 함수
-async function generateWeather( location ) {
-    
+async function generateWeather(location) {
     try {
         const weatherData = await getWeatherData(location);
 
@@ -28,5 +27,14 @@ async function generateWeather( location ) {
     }
 }
 
-// 실행
+// 테스트 실행
+(async () => {
+    const locations = ['seoul']; 
+    for (const location of locations) {
+        console.log(`Fetching weather for: ${location}`);
+        const prompt = await generateWeather(location);
+        console.log(`Generated prompt for ${location}:\n${prompt}\n`);
+    }
+})();
+
 module.exports = { generateWeather };
