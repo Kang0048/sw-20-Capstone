@@ -4,6 +4,8 @@ async function generateUserImages() {
   const userItem = document.getElementById('userItem').value;
   const userSeason = document.getElementById('userSeason').value;
   const userWeather = document.getElementById('userWeather').value;
+  const userSex = document.querySelector('input[name="gender"]:checked')?.value;
+
   //if (!userItem || !userSeason || !userWeather || !userInput) {alert('please fill out all fields')}
   const response = await fetch('http://127.0.0.1:5000/generate-userImage', {
     method: 'POST',
@@ -14,7 +16,8 @@ async function generateUserImages() {
       userItem: userItem,
       userSeason: userSeason,
       userWeather: userWeather,
-      userInput:userInput
+      userInput: userInput,
+      userSex: userSex,
     }),
   });
 

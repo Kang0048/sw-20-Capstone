@@ -5,7 +5,7 @@ const path = require('path');
 const express = require("express");
 // openAI 불러오기
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
-
+const { getWeatherData } = require('./weather'); // weather.js에서 날씨 데이터 함수 가져오기
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
@@ -24,14 +24,35 @@ const openai = new OpenAI({
 // express 사용
 const router = express.Router();
 
-// OpenAI API를 호출하는 라우트, /generate-image 엔드포인트
+// 날씨 상태를 한국어로 변환하는 함수 (수정된 부분)
+function translateWeather(pty, sky) {
+    if (pty === 'Rain') return '비가 옵니다.';
+    if (pty === 'Snow') return '눈이 옵니다.';
+    switch (sky) {
+        case 'Clear': return '맑습니다.';
+        case 'Partly Cloudy': return '구름이 조금 있습니다.';
+        case 'Mostly Cloudy': return '구름이 많습니다.';
+        case 'Overcast': return '흐립니다.';
+        default: return '알 수 없는 날씨입니다.';
+    }
+}
+
+// OpenAI API를 호출하는 라우트, /generate-APIprompt 엔드포인트
 router.post('/generate-APIprompt', async (req, res) => {
     console.log('Request received:', req.body); // 요청 로그 출력
 
     try {
         // 사용자에게 받은 텍스트
-        const { userInput } = req.body;
-        // 사용자의 입력값에 더해진 새로운 입력값
+        const { userInput, location } = req.body;
+
+        // 날씨 데이터 가져오기
+        const weatherData = await getWeatherData(location || 'seoul'); // 기본 위치는 서울
+        const { minTemp, maxTemp, avgTemp, pty, sky,pop} = weatherData;
+
+        // 날씨 상태를 한국어로 변환
+        const translatedWeather = translateWeather(pty, sky);
+
+        // 사용자 입력값에 더해진 새로운 입력값
         const newInput = `Please create a promotional message using "${userInput}".
         The prompt is an advertisement for a clothing shopping mall. 
         Ensure that the response is structured with clear paragraph breaks for better readability.
@@ -40,10 +61,10 @@ router.post('/generate-APIprompt', async (req, res) => {
         // 1: LLM API에 프롬프트 요청
         const response = await openai.chat.completions.create({
             model: 'gpt-4', // 모델을 gpt-4모델로 설정
-            messages: [{    // newInput을 프롬프트로 사용 
+            messages: [{
                 role: 'user',
-                content: newInput 
-            }], 
+                content: newInput
+            }],
         });
 
         // 프롬프트 정리
@@ -51,8 +72,11 @@ router.post('/generate-APIprompt', async (req, res) => {
 
         console.log('Generated Prompt:', prompt); // 프롬프트 출력
 
-        // 사용자에게는 프롬프트를 전달
-        res.json({ prompt : prompt});
+        // 사용자에게 프롬프트 전달
+        res.json({
+            prompt: `오늘의 최저기온은 ${minTemp}도, 최고기온은 ${maxTemp}도, 평균기온은 ${avgTemp}도 이고 강수확률은 ${pop}%입니다. 그리고 오늘의 날씨는 ${translatedWeather}\n\n${prompt}`
+        });
+
     } catch (error) {
         console.error('Error with OpenAI API request:', error.message);
         res.status(500).json({ error: 'An error occurred while processing your request.' });
