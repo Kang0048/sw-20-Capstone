@@ -28,14 +28,4 @@ async function generateWeather( location ) {
     }
 }
 
-// 테스트 실행
-(async () => {
-    const locations = ['seoul']; 
-    for (const location of locations) {
-        console.log(`Fetching weather for: ${location}`);
-        const prompt = await generateWeather(location);
-        console.log(`Generated prompt for ${location}:\n${prompt}\n`);
-    }
-})();
-
 module.exports = { generateWeather };

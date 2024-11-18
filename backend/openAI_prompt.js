@@ -5,7 +5,7 @@ const path = require('path');
 const express = require("express");
 // openAI 불러오기
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
-const { getWeatherData } = require('../weather/weahter'); // weather.js에서 날씨 데이터 함수 가져오기
+const { getWeatherData } = require('../weather/weather'); // weather.js에서 날씨 데이터 함수 가져오기
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });

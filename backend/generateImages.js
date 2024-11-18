@@ -2,13 +2,14 @@
 async function generateImages() {
     const userKeyword = document.getElementById('userKeyword').value;
     const userLoc = document.getElementById('region').value;
+    const userGender = checkGender('male', 'female');
 
     const response = await fetch('http://127.0.0.1:5000/generate-APIimage', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userKeyword: userKeyword, userLoc: userLoc})
+        body: JSON.stringify({ userKeyword: userKeyword, userLoc: userLoc, userGender: userGender})
     });
 
     const data = await response.json();
@@ -44,4 +45,17 @@ async function generateImages() {
     }
 }
 
-module.exports = { generateImages };
+function checkGender(maleID, femaleID){
+    const maleRadio = document.getElementById(maleID);
+    const femaleRadio = document.getElementById(femaleID);
+    
+    var gender = male; //기본값 남성
+
+    if (maleRadio.checked) {
+        gender = maleRadio.value; // 'male'이 선택된 경우
+    } else if (femaleRadio.checked) {
+        gender = femaleRadio.value; // 'female'이 선택된 경우
+    }
+
+    return gender;
+}
