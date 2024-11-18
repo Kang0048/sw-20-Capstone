@@ -1,4 +1,2 @@
-
-# .gitignore
-# Ignore environment files
-*touch.env
+*.env
+backend/touch.env
