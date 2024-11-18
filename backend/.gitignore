@@ -1,0 +1,4 @@
+
+# .gitignore
+# Ignore environment files
+*touch.env
