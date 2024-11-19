@@ -50,6 +50,29 @@ function determinePty(ptyValues, skyValue) {
     return 'Rain'; //기본 함수
 }
 
+// 계절 계산 함수 (한국 기준)
+function getSeason() {
+    const today = moment();
+    const year = today.year();
+
+    // 계절 시작 날짜 정의
+    const springStart = moment(`${year}-03-01`);
+    const summerStart = moment(`${year}-06-01`);
+    const autumnStart = moment(`${year}-09-01`);
+    const winterStart = moment(`${year}-12-01`);
+    const nextYearSpringStart = moment(`${year + 1}-03-01`);
+
+    if (today.isBetween(springStart, summerStart, null, '[)')) {
+        return 'spring';
+    } else if (today.isBetween(summerStart, autumnStart, null, '[)')) {
+        return 'summer';
+    } else if (today.isBetween(autumnStart, winterStart, null, '[)')) {
+        return 'autumn';
+    } else {
+        return 'winter';
+    }
+}
+
 // 날씨 데이터 요청 함수
 async function getWeatherData(location) {
     const today = moment().format('YYYYMMDD');
@@ -77,6 +100,7 @@ async function getWeatherData(location) {
         const sky = mapSkyCode(allData[4].sky); // SKY 매핑 적용
         const maxTemp = allData[3].maxTemp;
         const pop = allData[0].pop;
+        const season = getSeason();
 
         return {
             location,
@@ -85,7 +109,8 @@ async function getWeatherData(location) {
             maxTemp,
             sky,
             pop,
-            pty
+            pty,
+            season
         };
     } catch (error) {
         throw new Error('데이터 요청 중 오류 발생: ' + error);
