@@ -47,7 +47,7 @@ function determinePty(ptyValues, skyValue) {
     if (counts.rain === 0 && counts.snow === 0) return mapSkyCode(skyValue); // SKY 상태 사용
     if (counts.rain > counts.snow) return 'Rain';
     if (counts.snow > counts.rain) return 'Snow';
-    return 'Rain'; // Default to Rain if counts are equal
+    return 'Rain'; //기본 함수
 }
 
 // 날씨 데이터 요청 함수
@@ -64,21 +64,19 @@ async function getWeatherData(location) {
             requestData(today, '0800', stationX, stationY),
             requestData(today, '1100', stationX, stationY),
             requestData(today, '1400', stationX, stationY),
-            requestData(today, '1700', stationX, stationY),
-            requestData(today, '2000', stationX, stationY),
         ]);
 
         // PTY 결정
         const ptyValues = allData.map(data => data.pty);
-        const skyValue = allData[5].sky; // SKY 값 가져오기
+        const skyValue = allData[4].sky; // SKY 값 가져오기
         const pty = determinePty(ptyValues, skyValue);
 
         // 데이터 정리
         const minTemp = allData[0].minTemp;
-        const avgTemp = allData[2].avgTemp;
-        const sky = mapSkyCode(allData[5].sky); // SKY 매핑 적용
+        const avgTemp = allData[0].avgTemp;
+        const sky = mapSkyCode(allData[4].sky); // SKY 매핑 적용
         const maxTemp = allData[3].maxTemp;
-        const pop = allData[5].pop;
+        const pop = allData[0].pop;
 
         return {
             location,
