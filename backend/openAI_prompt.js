@@ -43,18 +43,18 @@ router.post('/generate-APIprompt', async (req, res) => {
 
     try {
         // 사용자에게 받은 텍스트
-        const { userInput, location } = req.body;
+        const { userInput, location, keyword } = req.body;
 
         // 날씨 데이터 가져오기
-        const weatherData = await getWeatherData(location || 'seoul'); // 기본 위치는 서울
+        const weatherData = await getWeatherData(location); // 기본 위치는 서울
         const { minTemp, maxTemp, avgTemp, pty, sky,pop} = weatherData;
 
         // 날씨 상태를 한국어로 변환
         const translatedWeather = translateWeather(pty, sky);
 
         let newInput;
-        if(promptKeyword && promptKeyword != ""){
-            newInput = `Please create a promotional message using "${userInput}". Ensure that the response is structured with clear paragraph breaks for better readability. Please write the results in Korean. Ensure that your response does not exceed 200 characters.`;
+        if(keyword && keyword != ""){
+            newInput = `Please create a promotional message using "${userInput}" and ${keyword}. Ensure that the response is structured with clear paragraph breaks for better readability. Please write the results in Korean. Ensure that your response does not exceed 200 characters.`;
         }else{
             newInput = `Please create a promotional message using "${userInput}". Ensure that the response is structured with clear paragraph breaks for better readability. Please write the results in Korean. Ensure that your response does not exceed 200 characters.`;
         }
