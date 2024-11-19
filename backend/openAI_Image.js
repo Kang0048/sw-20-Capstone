@@ -41,8 +41,8 @@ router.post('/generate-APIimage', async (req, res) => {
 
         let fashion_item;
         let lastPrompt;
-        let keywordURL
-        const season = "spring";
+        let keywordURL;
+        const season = weatherData.season;
         const pty = weatherData.pty;
 
         // 패션아이템 선정
