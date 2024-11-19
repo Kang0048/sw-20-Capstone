@@ -49,12 +49,14 @@ function checkGender(maleID, femaleID){
     const maleRadio = document.getElementById(maleID);
     const femaleRadio = document.getElementById(femaleID);
     
-    var gender = male; //기본값 남성
+    var gender;
 
     if (maleRadio.checked) {
         gender = maleRadio.value; // 'male'이 선택된 경우
     } else if (femaleRadio.checked) {
         gender = femaleRadio.value; // 'female'이 선택된 경우
+    } else{
+        gender = 'female';
     }
 
     return gender;

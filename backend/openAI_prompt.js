@@ -39,7 +39,7 @@ function translateWeather(pty, sky) {
 
 // OpenAI API를 호출하는 라우트, /generate-APIprompt 엔드포인트
 router.post('/generate-APIprompt', async (req, res) => {
-    console.log('Request received:', req.body); // 요청 로그 출력
+    console.log('프롬프트 전달받은 변수:', req.body); // 요청 로그 출력
 
     try {
         // 사용자에게 받은 텍스트
@@ -52,25 +52,31 @@ router.post('/generate-APIprompt', async (req, res) => {
         // 날씨 상태를 한국어로 변환
         const translatedWeather = translateWeather(pty, sky);
 
-        // 사용자 입력값에 더해진 새로운 입력값
-        const newInput = `Please create a promotional message using "${userInput}".
-        The prompt is an advertisement for a clothing shopping mall. 
-        Ensure that the response is structured with clear paragraph breaks for better readability.
-        Please write the results in Korean. Ensure that your response does not exceed 200 characters.`;
-                
+        let newInput;
+        if(promptKeyword && promptKeyword != ""){
+            newInput = `Please create a promotional message using "${userInput}". Ensure that the response is structured with clear paragraph breaks for better readability. Please write the results in Korean. Ensure that your response does not exceed 200 characters.`;
+        }else{
+            newInput = `Please create a promotional message using "${userInput}". Ensure that the response is structured with clear paragraph breaks for better readability. Please write the results in Korean. Ensure that your response does not exceed 200 characters.`;
+        }
         // 1: LLM API에 프롬프트 요청
         const response = await openai.chat.completions.create({
             model: 'gpt-4', // 모델을 gpt-4모델로 설정
-            messages: [{
-                role: 'user',
-                content: newInput
-            }],
+            messages: [
+                {
+                    role: 'system',
+                    content: "You are an employee who creates advertising text for a clothing shopping mall."
+                },
+                {
+                    role: 'user',
+                    content: newInput
+                }
+            ],
         });
 
         // 프롬프트 정리
         const prompt = response.choices[0].message.content.trim(); // response에서 결과 가져오기
 
-        console.log('Generated Prompt:', prompt); // 프롬프트 출력
+        console.log('최종 문구:', prompt); // 프롬프트 출력
 
         // 사용자에게 프롬프트 전달
         res.json({
