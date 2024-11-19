@@ -3,7 +3,9 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="height: 90vh;">
             <div class="modal-header">
+                
                 <h5 class="modal-title" id="imageModalLabel">AI 자동 생성</h5>
+                
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body-message">
@@ -13,12 +15,39 @@
                     <input type="text" id="messageTitle" class="form-control mb-2"
                         placeholder="ex > 겨울 맞이 30% 할인 프로모션 진행, 블랙프라이데이 진행 최대 80% 할인" rows="4">
                     <h6 class="section-title mb-3">중요 키워드 (선택)</h6>
-                    <p class="text-muted">* 키워드 1개 입력 하세요.</p>
                     <div class="d-flex mb-3">
                         <input type="text" class="form-control me-2" placeholder="입력한 키워드가 생성결과에 포함될 확률이 높아집니다.">
                     </div>
+                    <h6 class="section-title mb-3">지역 (선택)</h6>
+                    <select class="form-select region-select" id="regionDropdown" onchange="updateWeatherWidgetModal('messageModalWidget')">
+                        <option value="seoul" selected>서울</option>
+                        <option value="busan">부산</option>
+                        <option value="incheon">인천</option>
+                        <option value="daegu">대구</option>
+                        <option value="gwangju">광주</option>
+                        <option value="daejeon">대전</option>
+                        <option value="ulsan">울산</option>
+                        <option value="sejong">세종</option>
+                        <option value="jeju">제주도</option>
+                    </select>
+                
 
-                    <button class="btn btn-custom" onclick="generatePrompt()">AI 자동생성</button>
+                <!-- 추가된 위젯 -->
+                <div class="weather-widget mt-4" id="messageModalWidget">
+                    <div style="font-weight: bold;" id="selected-value-messageModal">서울</div>
+                    <div class="avgTemp" id="avgTemp-messageModal">13°</div>
+                    <div class="sky" id="sky-messageModal">흐림</div>
+                    <div class="temp-range">
+                        최고: <span id="maxTemp-messageModal">18°</span> 최저: <span id="minTemp-messageModal">10°</span>
+                    </div>
+                </div>
+
+                    <div class="input-group-custom-msg">
+                        <h6 class="section-title mb-3">메세지 자동 생성</h6>
+                        <p class="text-muted">AI가 입력된 발송 목적 및 내용에 적합한 메시지 내용을 생성합니다.</p>
+                        <button class="btn btn-custom w-100" onclick="generatePrompt()">AI 자동생성</button>
+                    </div>
+                    
                 </div>
 
                 <!-- Right Section -->
@@ -30,9 +59,7 @@
                     <button class="confirm-btn" onclick="confirmMessage()">확정</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-            </div>
+            
         </div>
     </div>
 </div>

@@ -7,7 +7,7 @@ const cors = require('cors');
 const express = require('express');
 // openAI 불러오기
 const OpenAI = require('openai'); // Ophttps://github.com/song12121212/SW-20.gitenAI를 기본으로 가져옴
-
+const { getWeatherData } = require('../weather/weather.js');
 // 이미지 생성 API 불러오기
 const openAI_Image = require('./openAI_Image');
 const openAI_Prompt = require('./openAI_prompt');
@@ -21,6 +21,16 @@ const app = express();
 const port = 5000;
 app.use(cors());
 app.use(express.json());
+
+app.get('/api/weather', async (req, res) => {
+  const location = req.query.location || 'seoul'; // 기본 값: 서울
+  try {
+      const weatherData = await getWeatherData(location); // weather.js에서 불러온 함수
+      res.json(weatherData);
+  } catch (error) {
+      res.status(500).send({ error: 'Failed to fetch weather data' });
+  }
+});
 
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;

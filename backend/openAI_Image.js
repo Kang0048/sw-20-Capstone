@@ -8,12 +8,12 @@ const cors = require('cors');
 // openAI 불러오기
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
 // 날씨 API
-const { generateWeather } = require('../weather/app');
+const { getWeatherData } = require('../weather/weather');
 // 패션아이템
 const { selectItem } = require('./selectitem');
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
 if (!openaiApiKey) {
@@ -31,22 +31,18 @@ router.use(cors());
 
 // OpenAI API를 호출하는 라우트, /generate-image 엔드포인트
 router.post('/generate-APIimage', async (req, res) => {
-    console.log('전달받은 변수:', req.body); // receive 확인
+    console.log('이미지 전달받은 변수:', req.body); // receive 확인
     try {
         // 사용자에게 받은 텍스트
         const { userKeyword, userLoc, userGender} = req.body;
 
-        // //날씨 API 객체 불러오기
-        // const weatherData = await generateWeather(userLoc);
-        // if (!weatherData) {
-        //     return res.status(400).json({ error: 'Failed to fetch valid weather data.' });
-        // }
-        // console.log(weatherData);
+        // 날씨 데이터 가져오기
+        const weatherData = await getWeatherData(userLoc || 'seoul'); // 기본 위치는 서울
 
         let fashion_item;
         let lastPrompt;
         const season ="autumn";
-        const pty = "";
+        const pty = weatherData.pty;
         // 패션아이템 선정
         if(userKeyword && userKeyword != ""){
             fashion_item = userKeyword;
