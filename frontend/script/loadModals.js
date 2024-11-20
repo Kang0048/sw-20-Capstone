@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // 모달을 로드한 후 이벤트 리스너를 초기화하는 함수
 async function loadModals() {
     const modals = [
-        './modal/loginModal.html',
         './modal/messageModal.html',
         './modal/imageModal.html',
         './modal/phoneModal.html',

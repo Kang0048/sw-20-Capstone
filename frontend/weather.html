@@ -20,7 +20,7 @@
 <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary ">
 
-        <a class="navbar-brand" href="#">20학번</a>
+        <a class="navbar-brand" href="weather.html">20학번</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -38,7 +38,7 @@
                 </li>
             </ul>
             <!-- 로그인 버튼 -->
-            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
+            <button type="button" class="btn btn-outline-primary" id="loginButton">
                 Login
             </button>
         </div>
@@ -94,7 +94,18 @@
                 </div>
 
                 <div class="input-group-custom mb-4">
-                    <h6 class="fw-bold mb-3">수신번호 입력</h6>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <!-- 수신번호 입력과 버튼 그룹 -->
+                        <div class="d-flex align-items-center gap-2">
+                            <h6 class="fw-bold mb-0">수신번호 입력</h6>
+                            <!-- 메모장 선택 버튼 -->
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="uploadTextFileButton">메모장 선택</button>
+                            <!-- 엑셀 선택 버튼 -->
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="uploadExcelButton">엑셀 선택</button>
+                            <!-- 한글 선택 버튼 -->
+                            <button type="button" class="btn btn-outline-secondary btn-sm" id="uploadHwpButton">한글 선택</button>
+                        </div>
+                    </div>
                     <div class="d-flex gap-3">
                         <textarea class="form-control" id="phoneInput" placeholder="휴대폰 번호를 줄바꿈으로 구분하여 입력 후 번호추가"
                             rows="4"></textarea>
@@ -132,6 +143,7 @@
 <script src="/backend/generateUserImages.js"></script>
 <script src="./script/weatherwidget.js"></script>
 <script src="./script/msgweatherwidget.js"></script>
+<script src="./script/uploadpphonenumber.js"></script>
 
 </body>
 
