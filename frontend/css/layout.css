@@ -3,6 +3,17 @@
     padding-left: 20px;
     padding-right: 20px;
     padding: 20px;
+}
+.main-container-message-history {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+.main-container-phone-number{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding: 20px;
     background-color: #f8f9fa;
 }
 

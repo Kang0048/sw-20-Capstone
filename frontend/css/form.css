@@ -13,6 +13,15 @@
     border-radius: 8px;
 }
 
+.input-group-custom-msg {
+    margin: 0 auto; /* 가로 중앙 정렬 */
+    padding: 8px; /* 위아래 크기를 줄임 */
+    background-color: #f7f8fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.875rem; /* 글자 크기 줄임 (기본 1rem보다 작게) */
+    line-height: 1.2; /* 줄 간격 조정 */
+}
 .textarea-container {
     position: relative;
     margin-top: 10px;
