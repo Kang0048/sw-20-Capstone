@@ -31,22 +31,33 @@ router.post('/signup', async (req, res) => {
 });
 
 // 로그인 라우트
+// routes/auth.js
+
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  console.log('Received login request:', req.body);
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ error: '아이디와 비밀번호를 모두 입력해주세요.' });
+  }
+
   try {
-    const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await db.execute('SELECT * FROM users WHERE username = ?', [username]);
     if (rows.length === 0) {
-      return res.status(400).json({ error: '이메일 또는 비밀번호가 일치하지 않습니다.' });
+      return res.status(400).json({ error: '아이디 또는 비밀번호가 일치하지 않습니다.' });
     }
 
     const user = rows[0];
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(400).json({ error: '이메일 또는 비밀번호가 일치하지 않습니다.' });
+      return res.status(400).json({ error: '아이디 또는 비밀번호가 일치하지 않습니다.' });
     }
 
     // JWT 토큰 생성
-    const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '1h' });
+    const token = jwt.sign(
+      { id: user.id },
+      process.env.JWT_SECRET, // 여기서 비밀 키를 전달
+      { expiresIn: '1h' }
+    );
 
     res.json({ message: '로그인 성공', token });
   } catch (error) {
@@ -54,5 +65,6 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ error: '서버 오류가 발생했습니다.' });
   }
 });
+
 
 module.exports = router;

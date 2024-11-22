@@ -56,11 +56,11 @@ function getSeason() {
     const year = today.year();
 
     // 계절 시작 날짜 정의
-    const springStart = moment(`${year}-03-01`);
-    const summerStart = moment(`${year}-06-01`);
-    const autumnStart = moment(`${year}-09-01`);
-    const winterStart = moment(`${year}-12-01`);
-    const nextYearSpringStart = moment(`${year + 1}-03-01`);
+    const springStart = moment(`${year}-02-04`);
+    const summerStart = moment(`${year}-05-05`);
+    const autumnStart = moment(`${year}-08-07`);
+    const winterStart = moment(`${year}-11-07`);
+    const nextYearSpringStart = moment(`${year + 1}-02-04`);
 
     if (today.isBetween(springStart, summerStart, null, '[)')) {
         return 'spring';
