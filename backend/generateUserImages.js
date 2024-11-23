@@ -5,6 +5,7 @@ async function generateUserImages() {
   const userSeason = document.getElementById('userSeason').value;
   const userWeather = document.getElementById('userWeather').value;
   const userSex = document.querySelector('input[name="gender"]:checked')?.value;
+  const userInputFix = document.getElementById('userInputFix').value;
 
   //if (!userItem || !userSeason || !userWeather || !userInput) {alert('please fill out all fields')}
   const response = await fetch('http://127.0.0.1:5000/generate-userImage', {
@@ -18,6 +19,7 @@ async function generateUserImages() {
       userWeather: userWeather,
       userInput: userInput,
       userSex: userSex,
+      userInputFix: userInputFix,
     }),
   });
 
@@ -49,9 +51,9 @@ async function generateUserImages() {
   }
 
   // keywordURL을 올바르게 표시
-  if (data.keywordURL) {
+  /*if (data.keywordURL) {
     document.getElementById('url').innerHTML = data.keywordURL;
   } else {
     document.getElementById('url').innerHTML = 'No URL';
-  }
+  }*/
 }
