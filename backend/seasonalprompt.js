@@ -6,7 +6,7 @@ const seasonalPrompts = [
     // 가을
     "golden leaves, maple trees, soft sunlight, crisp air",
     // 겨울
-    "frosted trees, cool tones, icy branches, serene landscape, misty air",
+    "frosted trees, icy branches, serene landscape, misty air",
     // 비
     "soft rain, overcast sky, puddles reflecting light",
     // 눈

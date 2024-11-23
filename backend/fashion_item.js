@@ -152,12 +152,10 @@ const autumnItems = {
 const winterItems = {
   male: [
       { ko: "패딩 재킷", name: "Puffer jacket" },
-      { ko: "울 스웨터", name: "Woolen sweater" },
-      { ko: "히트텍 셔츠", name: "Heat-tech shirt" },
+      { ko: "히트텍", name: "Heat-tech" },
       { ko: "코듀로이 재킷", name: "Corduroy jacket" },
       { ko: "캐시미어 코트", name: "Cashmere coat" },
       { ko: "하이넥 스웨터", name: "High-neck sweater" },
-      { ko: "울 팬츠", name: "Wool pants" },
       { ko: "무스탕", name: "Mouton coat" },
       { ko: "스웨터 드레스", name: "Sweater dress" }
   ],

@@ -16,6 +16,7 @@ const { seasonBack } = require('./seasonalprompt');
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
+
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
 if (!openaiApiKey) {
@@ -67,8 +68,49 @@ router.post('/generate-APIimage', async (req, res) => {
         else  // 패션 아이템 랜덤 지정
         {
             const fashion_item = selectItem(pty, season, userGender);
-            lastPrompt = `A ${userGender} person stands in a ${season}-themed background subtly reflecting ${season} with ${seasonBack(season)}. The ${fashion_item.name} is fully visible from shoulders to feet, showing both the upper and lower parts clearly, without cropping the lower half. The ${fashion_item.name} features realistic textures, natural folds, and precise details, with no background reflections or patterns to ensure clear separation. The clothing has a sophisticated, stylish look with a tailored fit and subtle design elements like fading, stitching, or modern accents. Soft, realistic lighting highlights the ${fashion_item.name}, while the background complements it without overpowering. The person's gender is reflected in the clothing style and fit, with shadows emphasizing the ${fashion_item.name} and making it the central focus, harmonizing with the seasonal theme.`
-            keywordURL = `https://www.musinsa.com/search/goods?keyword=${fashion_item.ko}&keywordType=keyword&gf=A`;
+            const response = await openai.chat.completions.create({
+                model: 'gpt-4-turbo',
+                messages: [
+                    {
+                        role: 'system',
+                        content: `
+                          You are a professional fashion assistant specializing in creating hyper-realistic and stylized digital art prompts for a fashion image generation AI.
+                          Your task is to describe the outfit and its components in rich detail, including materials, colors, and their suitability for the given season, weather, and gender.
+                          Add descriptive elements to enhance the visual appeal, such as the style, texture, and purpose of the clothing items.
+                          Integrate high-quality visual cues and camera-related keywords, such as:
+                          "photo-realistic", "cinematic lighting", "DSLR quality", "8K resolution", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
+                          Ensure the background reflects the given season and weather , incorporating elements that create a cohesive and immersive scene.
+                          The prompt must remain concise and under 1000 characters, ensuring there is no text in the generated image.
+                          Example Prompt: "A stylish outfit for a snowy winter day. The male model wears a deep navy woolen coat, tailored for a sleek silhouette. Underneath is an ivory turtleneck sweater paired with charcoal grey trousers. Accessories include a knitted teal scarf and matching beanie. The scene features softly falling snow in a tranquil winter forest, rendered in photo-realistic detail with cinematic lighting and shallow depth of field."
+                        `,
+                    },            
+                    {
+                        role: 'user',
+                        content: `
+                        Generate a fashion image prompt using:
+                        Season: ${season}.
+                        Weather: ${pty}.
+                        background: ${seasonBack(season)}.
+                        Gender: ${userGender}.
+                        `,
+                    },
+                ],
+            });
+
+            lastPrompt = response.choices[0].message.content.trim();
+            
+            const itemResponse = await openai.chat.completions.create({
+                model: "gpt-4",
+                messages: [
+                    { role: "system", content: "You are a fashion designer. you find main item and translate from Korean to English." },
+                    { role: "user", content: `Generate a main fashion item in prompt: ${lastPrompt}. you just return one word.` }
+                ],
+                temperature: 0,
+                max_tokens: 10,
+            });
+
+            const keyfashionitem = itemResponse.choices[0].message.content.trim();
+            keywordURL = `https://www.musinsa.com/search/goods?keyword=${keyfashionitem}&keywordType=keyword&gf=A`;
         }
         
         console.log('최종 프롬프트:', lastPrompt); // 프롬프트 확인

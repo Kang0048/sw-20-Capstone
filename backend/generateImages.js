@@ -13,7 +13,7 @@ async function generateImages() {
     const userKeyword = document.getElementById('userKeyword').value;
     const userLoc = document.getElementById('region').value;
     const userGender = checkGender('male', 'female');
-
+    
     const response = await fetch('http://127.0.0.1:5000/generate-APIimage', {
         method: 'POST',
         headers: {
@@ -48,10 +48,11 @@ async function generateImages() {
 
     // keywordURL을 올바르게 표시
     if (data.keywordURL) {
-        console.log(data.keywordURL);
-        document.getElementById(`messageContent1`).innerHTML = `\nURL: ${data.keywordURL}`;
+        // URL 추가
+        messageContent1.value += `\nURL 링크 \n${data.keywordURL}`;
     } else {
-        document.getElementById(`messageContent1`).innerHTML = `No URL`;
+        // URL이 없을 경우 메시지 추가
+        messageContent1.value += `No URL generated`;
     }
     hideLoading(); 
 }
