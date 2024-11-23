@@ -1,12 +1,6 @@
 // 전역 변수: 선택된 이미지 URL
 window.selectedImageUrl = null;
 
-// imageUploadContainer 클릭 시 파일 입력 활성화
-document.getElementById("imageUploadContainer").addEventListener("click", function () {
-    document.getElementById("imageInput").click();
-});
-
-let selectedImageBoxId = null;
 
 // 이미지 선택 함수
 function selectImage(element) {
