@@ -47,4 +47,17 @@ router.post('/send', authenticateToken, async (req, res) => {
   }
 });
 
+// 메시지 내역 조회 라우트
+router.get('/', authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const [messages] = await db.execute('SELECT * FROM messages WHERE user_id = ? ORDER BY created_at DESC', [userId]);
+    res.json({ messages });
+  } catch (error) {
+    console.error('Message Fetch Error:', error);
+    res.status(500).json({ error: '메시지 내역 조회 중 오류가 발생했습니다.' });
+  }
+});
+
 module.exports = router;
