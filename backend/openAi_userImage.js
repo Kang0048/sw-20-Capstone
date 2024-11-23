@@ -18,7 +18,7 @@ app.use(
     saveUninitialized: true, // 초기화되지 않은 세션을 저장할지 여부
     cookie: {
       secure: false, // HTTPS를 사용하는 경우 true로 설정
-      maxAge: 60000, // 쿠키 유효 기간 (밀리초, 1분)
+      maxAge: 180000, // 쿠키 유효 기간 (밀리초, 1분)
     },
   })
 );
@@ -37,14 +37,16 @@ const openai = new OpenAI({
 // express 사용
 const router = express.Router();
 const fixPrompt = async (originalPrompt, userFix) => {
-  console.log("수정사항 실행중");
+  console.log('수정사항 실행중');
   const response = await openai.chat.completions.create({
     model: 'gpt-4',
     messages: [
       {
         role: 'system',
         content: `
-          You are a prompt editor. Modify the given prompt based on the user's additional requests. Ensure clarity and maintain the original context and style.
+          You are a prompt editor. Your primary task is to modify the given prompt by incorporating the user's additional requests as accurately as possible while maintaining the original context and style.
+          Ensure the image contains no text. The final prompt must be concise, clear, and under 1000 characters.
+          Always prioritize the user's fix requests while ensuring grammatical accuracy and coherence.
         `,
       },
       {
@@ -77,7 +79,7 @@ router.post('/generate-userImage', async (req, res) => {
       userInputFix,
     } = req.body;
     console.log('사용자 입력 프롬프트: ', userInput);
-    if (userInputFix) {
+    if (userInputFix && req.session.prompt != '') {
       const previousPrompt = req.session.lastPrompt;
       if (!previousPrompt) {
         return res
@@ -85,42 +87,50 @@ router.post('/generate-userImage', async (req, res) => {
           .json({ error: 'No previous prompt found in session.' });
       }
       prompt = await fixPrompt(previousPrompt, userInputFix);
+      req.session.prompt = prompt;
     }
     // 1: LLM API에 프롬프트 요청
     else {
+      req.session.prompt = '';
       const response = await openai.chat.completions.create({
-        model: 'gpt-4-turbo',
+        model: 'gpt-4',
         messages: [
           {
             role: 'system',
             content: `
-              You are a professional fashion assistant creating detailed prompts for a fashion image generation AI.
-              Describe the outfit in rich detail, including material, color, and purpose, tailored for the season, weather, and gender.
-              Highlight key clothing items and ensure the background reflects the specified season and weather.
-              Example Prompt: "A stylish outfit for a snowy winter day. The male model wears a deep navy woolen coat, tailored for a sleek silhouette. Underneath is an ivory turtleneck sweater paired with charcoal grey trousers. Accessories include a knitted teal scarf and matching beanie. The scene features softly falling snow in a tranquil winter forest."
-              Ensure there is no text in the image. Prompt must be under 1000 characters.
+              You are a professional fashion assistant specializing in creating hyper-realistic and stylized digital art prompts for a fashion image generation AI.
+              Your task is to describe the outfit and its components in rich detail, including materials, colors, and their suitability for the given season, weather, and gender.
+              Add descriptive elements to enhance the visual appeal, such as the style, texture, and purpose of the clothing items.
+              Integrate high-quality visual cues and camera-related keywords, such as:
+              "photo-realistic", "cinematic lighting", "DSLR quality", "8K resolution", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
+              Ensure the background reflects the given season and weather , incorporating elements that create a cohesive and immersive scene.
+              The prompt must remain concise and under 1000 characters, ensuring there is no text in the generated image.
+              Example Prompt: "A stylish outfit for a snowy winter day. The male model wears a deep navy woolen coat, tailored for a sleek silhouette. Underneath is an ivory turtleneck sweater paired with charcoal grey trousers. Accessories include a knitted teal scarf and matching beanie. The scene features softly falling snow in a tranquil winter forest, rendered in photo-realistic detail with cinematic lighting and shallow depth of field."
             `,
           },
           {
             role: 'user',
             content: `
-              Generate a fashion image prompt using:
-              Season: ${userSeason}.
-              Weather: ${userWeather}.
-              Item: ${userItem}.
-              Gender: ${userSex}.
-              User Input: "${userInput}".
+              Generate a detailed fashion image prompt using the following parameters:
+              - Season: ${userSeason}.
+              - Weather: ${userWeather}.
+              - Key Item: ${userItem}.
+              - Gender: ${userSex}.
+              Additional User Input: "${userInput}".
+              The background must reflects the ${userSeason} season and ${userWeather}, and the image should be rendered with hyper-realistic details, cinematic lighting, and a focus on DSLR-quality output.
             `,
           },
         ],
       });
-      console.log("성공");
+
+      console.log('성공');
       // 프롬프트 정리
       var prompt = response.choices[0].message.content.trim(); // response에서 결과 가져오기
       req.session.lastPrompt = prompt;
       // console.log('Generated prompt:', prompt);
       //req.session.lastPrompt = prompt;
     }
+    prompt += `background reflects the ${userWeather}`;
     // prompt =
     //'a man with a tie and a coat on posing for a picture in a park with trees in the background, Edward Clark, neoclassicism, promotional image, a character portrait';
     // "A stylish outfit designed for a snowy winter day. The male model is wearing a luxurious black leather jacket lined with soft faux fur for extra warmth. The outfit is paired with dark, slim-fit trousers, and sleek leather boots that complement the jacket's texture. Accessories include a cozy wool scarf in shades of gray and a matching pair of knitted gloves to enhance the winter feel. The background features a serene snowy landscape with gently falling snowflakes and frosted trees, creating a cozy yet sophisticated winter atmosphere. No text should be included in the image.";
@@ -134,14 +144,17 @@ router.post('/generate-userImage', async (req, res) => {
     // 2: 이미지 생성 API에 요청
 
     const imageResponse = await openai.images.generate({
-      prompt: prompt, // 프롬프트를 JSON 형식으로 전달
-      n: 4, // 생성할 이미지 수
-      size: '1024x1024', // 이미지 크기
+      // prompt: `A hyper-realistic image of a male model wearing a tailored double-breasted gray wool coat with a high stand-up collar and sharp lapels. Underneath, he wears a thick white cable-knit sweater, paired with dark slim-fit jeans. Black leather gloves complete his refined winter look. The background features a tranquil snowy forest with snow-covered pine trees and softly falling snowflakes. The scene is illuminated with cinematic lighting, emphasizing the textures of the coat and sweater. The image is captured with DSLR quality, featuring shallow depth of field and rendered in 8K resolution for ultra-detailed realism.`,
+      prompt: prompt,
+      n: 4,
+      quality: 'hd',
+      size: '1024x1024', // Adjust size if needed
     });
-   // console.log(
-     // 'Generated Images:',
-      //imageResponse.data.map((img) => img.url)
-   // );
+
+    // console.log(
+    // 'Generated Images:',
+    //imageResponse.data.map((img) => img.url)
+    // );
 
     // 3: 응답 처리
     // 이미지 URL 배열화
