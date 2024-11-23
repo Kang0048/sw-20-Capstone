@@ -71,27 +71,29 @@ router.post('/generate-APIimage', async (req, res) => {
             const response = await openai.chat.completions.create({
                 model: 'gpt-4-turbo',
                 messages: [
-                  {
-                    role: 'system',
-                    content: `
-                      You are a professional fashion assistant creating detailed prompts for a fashion image generation AI.
-                      Describe the outfit in rich detail, including material, color, and purpose, tailored for the season, weather, and gender.
-                      The person is fully visible from shoulders to feet, showing both the upper and lower parts clearly, without cropping the lower half.
-                      Highlight key clothing items and ensure the background reflects the specified season and weather and background.
-                      Example Prompt: ""
-                      Ensure there is no text in the image. Prompt must be under 1000 characters.
-                    `,
-                  },
-                  {
-                    role: 'user',
-                    content: `
-                      Generate a fashion image prompt using:
-                      Season: ${season}.
-                      Weather: ${pty}.
-                      background: ${seasonBack(season)}.
-                      Gender: ${userGender}.
-                    `,
-                  },
+                    {
+                        role: 'system',
+                        content: `
+                          You are a professional fashion assistant specializing in creating hyper-realistic and stylized digital art prompts for a fashion image generation AI.
+                          Your task is to describe the outfit and its components in rich detail, including materials, colors, and their suitability for the given season, weather, and gender.
+                          Add descriptive elements to enhance the visual appeal, such as the style, texture, and purpose of the clothing items.
+                          Integrate high-quality visual cues and camera-related keywords, such as:
+                          "photo-realistic", "cinematic lighting", "DSLR quality", "8K resolution", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
+                          Ensure the background reflects the given season and weather , incorporating elements that create a cohesive and immersive scene.
+                          The prompt must remain concise and under 1000 characters, ensuring there is no text in the generated image.
+                          Example Prompt: "A stylish outfit for a snowy winter day. The male model wears a deep navy woolen coat, tailored for a sleek silhouette. Underneath is an ivory turtleneck sweater paired with charcoal grey trousers. Accessories include a knitted teal scarf and matching beanie. The scene features softly falling snow in a tranquil winter forest, rendered in photo-realistic detail with cinematic lighting and shallow depth of field."
+                        `,
+                    },            
+                    {
+                        role: 'user',
+                        content: `
+                        Generate a fashion image prompt using:
+                        Season: ${season}.
+                        Weather: ${pty}.
+                        background: ${seasonBack(season)}.
+                        Gender: ${userGender}.
+                        `,
+                    },
                 ],
             });
 

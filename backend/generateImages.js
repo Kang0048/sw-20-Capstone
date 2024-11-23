@@ -49,7 +49,7 @@ async function generateImages() {
     // keywordURL을 올바르게 표시
     if (data.keywordURL) {
         // URL 추가
-        messageContent1.value += `\nURL 링크 \n${data.keywordURL}`;<pre></pre>
+        messageContent1.value += `\nURL 링크 \n${data.keywordURL}`;
     } else {
         // URL이 없을 경우 메시지 추가
         messageContent1.value += `No URL generated`;
