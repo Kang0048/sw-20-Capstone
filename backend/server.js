@@ -13,6 +13,9 @@ const openAI_Image = require('./openAI_Image');
 const openAI_Prompt = require('./openAI_prompt');
 const openAi_UserImage = require('./openAi_userImage');
 
+// 추가된 라이브러리
+const axios = require('axios');
+
 // 라우트 파일 임포트
 const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/message');
@@ -25,8 +28,11 @@ const app = express();
 // 포트번호 설정
 const port = 5000;
 const session = require('express-session');
+
+// 미들웨어 설정
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // JSON 요청 크기 제한을 10MB로 설정
+app.use(express.urlencoded({ limit: '10mb', extended: true })); // URL-encoded 데이터 크기 제한
 app.use(
   session({
     secret: 'your-secret-key', // 세션 암호화 키
@@ -38,21 +44,56 @@ app.use(
     },
   })
 );
-// 미들웨어 설정
-app.use(cors());
-app.use(express.json());
 
 // 라우트 사용
 app.use('/auth', authRoutes);
 app.use('/message', messageRoutes);
 
+// CORS 문제 해결을 위한 프록시 라우트 추가
+app.post('/api/proxy', async (req, res) => {
+  const { url, method, headers, data } = req.body; // 요청 데이터를 파싱
+  try {
+    const response = await axios({
+      url,
+      method,
+      headers,
+      data,
+      timeout: 5000,
+      responseType: method === 'GET' ? 'stream' : 'json', // 이미지 URL을 GET 요청할 경우 스트림으로 처리
+    });
 
+    // 이미지 URL 처리 로직
+    if (method === 'GET' && headers['Accept'] === 'image/*') {
+      const chunks = [];
+      response.data.on('data', (chunk) => chunks.push(chunk));
+      response.data.on('end', () => {
+        const buffer = Buffer.concat(chunks);
+        const base64Image = buffer.toString('base64');
+        res.json({
+          name: 'image.jpg',
+          size: buffer.length,
+          data: base64Image,
+        });
+      });
+    } else {
+      res.status(response.status).json(response.data);
+    }
+  } catch (error) {
+    console.error('프록시 요청 실패:', error.response?.data || error.message);
+    res
+      .status(error.response?.status || 500)
+      .send(error.response?.data || { error: error.message });
+  }
+});
+
+// Weather API
 app.get('/api/weather', async (req, res) => {
   const location = req.query.location || 'seoul'; // 기본 값: 서울
   try {
     const weatherData = await getWeatherData(location); // weather.js에서 불러온 함수
     res.json(weatherData);
   } catch (error) {
+    console.error('Weather API 요청 실패:', error.message);
     res.status(500).send({ error: 'Failed to fetch weather data' });
   }
 });
@@ -63,7 +104,6 @@ if (!openaiApiKey) {
   console.error('OPENAI_API_KEY is missing or empty.');
   process.exit(1); // 서버 종료
 }
-// openai로 키 설정
 const openai = new OpenAI({
   apiKey: openaiApiKey,
 });
@@ -72,7 +112,7 @@ const openai = new OpenAI({
 app.use(express.static(path.join(__dirname, '../frontend')));
 app.use('/backend', express.static(path.join(__dirname)));
 
-// 원하는 HTML 파일 경로
+// HTML 파일 경로 설정
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'weather.html'));
 });

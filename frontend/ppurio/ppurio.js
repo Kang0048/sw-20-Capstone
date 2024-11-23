@@ -1,55 +1,62 @@
+// Axios는 브라우저에서 전역 객체로 로드되었음을 가정 (CDN을 통해)
+// 설정 상수 선언
 const TIME_OUT = 5000;
 const API_KEY = '6e84ebeb9c8eb9215c1d3f8de4de4fa7598cea2719f94ccb6a9109d35d4f5345';
 const PPURIO_ACCOUNT = 'cap123';
-const URI = 'https://message.ppurio.com';
+const PROXY_URL = 'http://localhost:5000/api/proxy'; // 프록시 서버 URL
 
-// 메시지 전송 요청
-export async function requestSend(to, from, name, content, image) {
-    const basicAuthorization = btoa(`${PPURIO_ACCOUNT}:${API_KEY}`); // Base64 인코딩
-    const tokenResponse = await getToken(URI, basicAuthorization);
-    const sendResponse = await sendMessage(URI, tokenResponse.token, to, from, name, content, image);
+// 문자 발송 요청 함수
+export async function requestSend(to, from, name, content, filePath) {
+    const tokenResponse = await getToken();
+    const sendResponse = await send(tokenResponse.token, to, from, name, content, filePath);
+    console.log('메시지 전송 성공:', sendResponse);
     return sendResponse;
 }
 
 // 토큰 발급 요청 함수
-async function getToken(baseUri, basicAuthorization) {
+async function getToken() {
     try {
-        const response = await axios.post(`${baseUri}/v1/token`, {}, {
+        const response = await axios.post(PROXY_URL, {
+            url: 'https://message.ppurio.com/v1/token', // 실제 API URL
+            method: 'POST',
             headers: {
-                Authorization: `Basic ${basicAuthorization}`,
+                Authorization: `Basic ${btoa(`${PPURIO_ACCOUNT}:${API_KEY}`)}`,
                 'Content-Type': 'application/json',
             },
-            timeout: TIME_OUT,
+            data: {},
         });
         return response.data;
     } catch (error) {
-        console.error('토큰 발급 실패:', error.response ? error.response.data : error.message);
+        console.error('토큰 발급 실패:', error.response?.data || error.message);
         throw new Error('토큰 발급 실패: ' + error.message);
     }
 }
 
-// 메시지 전송 요청 함수
-async function sendMessage(baseUri, accessToken, to, from, name, content, image) {
-    const bearerAuthorization = `Bearer ${accessToken}`;
-    const sendParams = createSendParams(to, from, name, content, image);
+// 문자 발송 요청 함수
+async function send(accessToken, to, from, name, content, filePath) {
+    const sendParams = await createSendParams(to, from, name, content, filePath);
+
+    console.log('전송 요청 데이터:', sendParams); // 디버깅용 로그
 
     try {
-        const response = await axios.post(`${baseUri}/v1/message`, sendParams, {
+        const response = await axios.post(PROXY_URL, {
+            url: 'https://message.ppurio.com/v1/message',
+            method: 'POST',
             headers: {
-                Authorization: bearerAuthorization,
+                Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
             },
-            timeout: TIME_OUT,
+            data: sendParams,
         });
         return response.data;
     } catch (error) {
-        console.error('메시지 전송 실패:', error.response ? error.response.data : error.message);
+        console.error('메시지 전송 실패:', error.response?.data || error.message);
         throw new Error('메시지 전송 실패: ' + error.message);
     }
 }
 
-// 메시지 전송 파라미터 생성 함수
-function createSendParams(to, from, name, content, image) {
+// 발송 파라미터 생성 함수
+async function createSendParams(to, from, name, content, filePath) {
     const params = {
         account: PPURIO_ACCOUNT,
         messageType: 'MMS',
@@ -65,20 +72,46 @@ function createSendParams(to, from, name, content, image) {
         refKey: generateRandomKey(),
     };
 
-    if (image) {
-        params.files = [createFileParams(image)];
+    // 파일 첨부가 있는 경우
+    if (filePath) {
+        const fileData = await createFileParams(filePath);
+        params.files = [fileData];
     }
 
     return params;
 }
 
-// 파일 파라미터 생성 함수
-function createFileParams(image) {
-    return {
-        size: image.size || 0,
-        name: image.name || 'image.jpg',
-        data: image.data || '',
-    };
+// 파일 첨부 파라미터 생성 함수
+async function createFileParams(filePath) {
+    if (!filePath) {
+        throw new Error('유효한 파일 경로가 없습니다.');
+    }
+
+    const fileName = 'image.jpg'; // 파일 이름 고정
+
+    try {
+        // 프록시 서버를 통해 이미지 데이터를 가져옴
+        const response = await axios.post(PROXY_URL, {
+            url: filePath,
+            method: 'GET',
+            headers: {
+                Accept: 'image/*', // 이미지 데이터 요청
+            },
+        });
+
+        // 이미지 데이터를 Base64로 변환
+        if (!response.data || !response.data.data) {
+            throw new Error('이미지 데이터를 가져오지 못했습니다.');
+        }
+
+        return {
+            size: response.data.size,
+            name: fileName,
+            data: response.data.data, // Base64 인코딩된 데이터
+        };
+    } catch (error) {
+        throw new Error('이미지를 처리하는 중 오류가 발생했습니다: ' + error.message);
+    }
 }
 
 // 랜덤 키 생성 함수
@@ -89,32 +122,4 @@ function generateRandomKey() {
         result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     return result;
-}
-
-// 예약 취소 요청 함수
-export async function requestCancel(messageKey) {
-    const basicAuthorization = btoa(`${PPURIO_ACCOUNT}:${API_KEY}`);
-    const tokenResponse = await getToken(URI, basicAuthorization);
-    const cancelResponse = await cancelMessage(URI, tokenResponse.token, messageKey);
-    return cancelResponse;
-}
-
-// 예약 취소 API 호출
-async function cancelMessage(baseUri, accessToken, messageKey) {
-    const bearerAuthorization = `Bearer ${accessToken}`;
-    const cancelParams = { account: PPURIO_ACCOUNT, messageKey };
-
-    try {
-        const response = await axios.post(`${baseUri}/v1/cancel`, cancelParams, {
-            headers: {
-                Authorization: bearerAuthorization,
-                'Content-Type': 'application/json',
-            },
-            timeout: TIME_OUT,
-        });
-        return response.data;
-    } catch (error) {
-        console.error('예약 취소 실패:', error.response ? error.response.data : error.message);
-        throw new Error('예약 취소 실패: ' + error.message);
-    }
 }
