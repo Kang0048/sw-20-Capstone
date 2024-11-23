@@ -1,0 +1,25 @@
+/* 로딩 오버레이 */
+.loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1050; /* 모달보다 위에 표시 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 로딩 콘텐츠 */
+.loading-content {
+    text-align: center;
+}
+
+/* 로딩 스피너 */
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 10px;
+}

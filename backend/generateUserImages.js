@@ -1,5 +1,15 @@
+function showLoading() {
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  loadingOverlay.style.display = 'flex';
+}
+
+function hideLoading() {
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  loadingOverlay.style.display = 'none';
+}
 // generateImages.js
 async function generateUserImages() {
+  showLoading();
   const userInput = document.getElementById('messageContent1').value;
   const userItem = document.getElementById('userItem').value;
   const userSeason = document.getElementById('userSeason').value;
@@ -49,7 +59,7 @@ async function generateUserImages() {
       document.getElementById(`userImageBox${i}`).innerHTML = '<p>No image</p>';
     }
   }
-
+  hideLoading();
   // keywordURL을 올바르게 표시
   /*if (data.keywordURL) {
     document.getElementById('url').innerHTML = data.keywordURL;

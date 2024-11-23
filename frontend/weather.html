@@ -15,6 +15,7 @@
     <link href="./css/layout.css" rel="stylesheet">
     <link href="./css/weatherwidget.css" rel="stylesheet">
     <link href="./css/message_history.css" rel="stylesheet">
+    <link href="./css/imageloading.css" rel="stylesheet">
 </head>
 
 <body>
@@ -71,12 +72,11 @@
                             AI 이미지 생성
                         </button>
                     </div>
-                    <div class="border border-secondary rounded d-flex align-items-center justify-content-center"
-                        style="cursor: pointer; overflow: hidden; position: relative;" id="imageUploadContainer">
+                    <div class="image-box" id="imageUploadContainer" onclick="document.getElementById('imageInput').click();">
                         <span class="text-muted fs-3" id="uploadIcon">+</span>
-                        <input type="file" id="imageInput" style="display: none;" accept="image/*"
-                            onchange="handleFileSelect(event)">
+                        <input type="file" id="imageInput" style="display: none;" accept="image/*" onchange="handleFileSelect(event)">
                     </div>
+                    
                 </div>
             </div>
 

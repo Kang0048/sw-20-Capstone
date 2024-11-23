@@ -1,5 +1,15 @@
 // generateImages.js
+function showLoading() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.style.display = 'flex';
+  }
+  
+  function hideLoading() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.style.display = 'none';
+  }
 async function generateImages() {
+    showLoading();
     const userKeyword = document.getElementById('userKeyword').value;
     const userLoc = document.getElementById('region').value;
     const userGender = checkGender('male', 'female');
@@ -43,6 +53,7 @@ async function generateImages() {
     } else {
         document.getElementById(`messageContent1`).innerHTML = `No URL`;
     }
+    hideLoading(); 
 }
 
 function checkGender(maleID, femaleID){
@@ -60,4 +71,5 @@ function checkGender(maleID, femaleID){
     }
 
     return gender;
+    
 }
