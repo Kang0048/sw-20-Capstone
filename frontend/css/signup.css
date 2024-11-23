@@ -1,6 +1,6 @@
 
 body {
-    background-color: rgba(52, 152, 219, 0.1); /* 연한 파란색 */
+    background-color: #f8f9fa; /* 연한 파란색 */
     min-height: 100vh;
     display: flex;
     align-items: center;
