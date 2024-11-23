@@ -11,6 +11,8 @@ const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
 const { getWeatherData } = require('../weather/weather');
 // 패션아이템
 const { selectItem } = require('./selectitem');
+// 시즌
+const { seasonBack } = require('./seasonalprompt');
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
@@ -39,20 +41,33 @@ router.post('/generate-APIimage', async (req, res) => {
         // 날씨 데이터 가져오기
         const weatherData = await getWeatherData(userLoc); // 기본 위치는 서울
 
-        let fashion_item;
         let lastPrompt;
         let keywordURL;
         const season = weatherData.season;
         const pty = weatherData.pty;
 
         // 패션아이템 선정
-        if(userKeyword && userKeyword != ""){
-            fashion_item = userKeyword;
-            lastPrompt = `A person standing in a ${season}-themed background with ${pty} conditions. The background should clearly reflect the unique characteristics of ${season} (e.g., bright colors and sunlight for summer, golden tones for autumn, snowy and cold scenery for winter). The person is wearing a ${fashion_item} that is the focal point of the image. The clothing should appear highly realistic, with detailed textures and lifelike design, making the ${fashion_item} stand out. The person is positioned so that the ${fashion_item} is fully visible from shoulders to feet. The image should have vibrant colors, with realistic lighting that enhances the textures and designs of the clothing and accessories. Focus on making the fashion item look stylish and visually appealing within the seasonal context.`
-            keywordURL = `https://www.musinsa.com/search/goods?keyword=${fashion_item}&keywordType=keyword&gf=A`;
-        }else{ // 패션 아이템 랜덤 지정
-            fashion_item = selectItem(pty, season, userGender);
-            lastPrompt = `A ${season}-themed background with ${pty} conditions. A ${userGender} wearing ${fashion_item.name} is present in the scene. The background reflects the characteristics of ${season}. The person is stylishly dressed, with the ${fashion_item.name} being a focal point in the scene. The clothing and accessories should appear highly realistic, showcasing detailed textures and lifelike design. Images should have vibrant colors, realistic textures, and a high level of detail about the clothing. This person must stand so that the fashion item in question is clearly visible from shoulders to feet.`
+        if(userKeyword && userKeyword != "")
+        {
+            const itemResponse = await openai.chat.completions.create({
+                model: "gpt-4",
+                messages: [
+                    { role: "system", content: "You are a translator from Korean to English." },
+                    { role: "user", content: `Translate the following fashion item from Korean to English: ${userKeyword}. you just return one word.` }
+                ],
+                temperature: 0,
+                max_tokens: 10,
+            });
+
+            const fashion_item = itemResponse.choices[0].message.content.trim();
+            
+            lastPrompt = `A ${userGender} person stands in a ${season}-themed background subtly reflecting ${season} with ${seasonBack(season)}. The ${fashion_item} is fully visible from shoulders to feet, showing both the upper and lower parts clearly, without cropping the lower half. The ${fashion_item} features realistic textures, natural folds, and precise details, with no background reflections or patterns to ensure clear separation. The clothing has a sophisticated, stylish look with a tailored fit and subtle design elements like fading, stitching, or modern accents. Soft, realistic lighting highlights the ${fashion_item}, while the background complements it without overpowering. The person's gender is reflected in the clothing style and fit, with shadows emphasizing the ${fashion_item} and making it the central focus, harmonizing with the seasonal theme.`
+            keywordURL = `https://www.musinsa.com/search/goods?keyword=${userKeyword}&keywordType=keyword&gf=A`;
+        }
+        else  // 패션 아이템 랜덤 지정
+        {
+            const fashion_item = selectItem(pty, season, userGender);
+            lastPrompt = `A ${userGender} person stands in a ${season}-themed background subtly reflecting ${season} with ${seasonBack(season)}. The ${fashion_item.name} is fully visible from shoulders to feet, showing both the upper and lower parts clearly, without cropping the lower half. The ${fashion_item.name} features realistic textures, natural folds, and precise details, with no background reflections or patterns to ensure clear separation. The clothing has a sophisticated, stylish look with a tailored fit and subtle design elements like fading, stitching, or modern accents. Soft, realistic lighting highlights the ${fashion_item.name}, while the background complements it without overpowering. The person's gender is reflected in the clothing style and fit, with shadows emphasizing the ${fashion_item.name} and making it the central focus, harmonizing with the seasonal theme.`
             keywordURL = `https://www.musinsa.com/search/goods?keyword=${fashion_item.ko}&keywordType=keyword&gf=A`;
         }
         

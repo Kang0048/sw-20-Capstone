@@ -56,7 +56,7 @@ function checkGender(maleID, femaleID){
     } else if (femaleRadio.checked) {
         gender = femaleRadio.value; // 'female'이 선택된 경우
     } else{
-        gender = 'female';
+        gender = 'male';
     }
 
     return gender;

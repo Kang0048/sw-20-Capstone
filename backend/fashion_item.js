@@ -39,9 +39,9 @@ const rainItems = [
     { ko: "셰르파 후디", name: "Sherpa-lined hoodie" },
     { ko: "플리스 바지", name: "Fleece-lined pants" },
     { ko: "카울넥 스웨터", name: "Cowl neck sweater" },
-        
+    { ko: "니트 스카프", name: "Knit scarf" },
+    
     // { ko: "스노우 부츠", name: "Snow boots" },
-    // { ko: "니트 스카프", name: "Knit scarf" },
     // { ko: "플리스 장갑", name: "Fleece gloves" },
     // { ko: "보온 양말", name: "Thermal socks" },
     // { ko: "단열 장갑", name: "Insulated mittens" },
@@ -67,7 +67,10 @@ const springItems = {
       { ko: "카프리 팬츠", name: "Capri pants" },
       { ko: "경량 스웻셔츠", name: "Light sweatshirt" },
       { ko: "라이트 후디", name: "Light hoodie" },
-      { ko: "경량 파카", name: "Light parka" }
+      { ko: "경량 파카", name: "Light parka" },
+      { ko: "브이넥 스웨터", name: "V-neck sweater" },
+      { ko: "스포츠 재킷", name: "Sport jacket" },
+      { ko: "체크 무늬 셔츠", name: "Checkered shirt" },
   ],
   female: [
       { ko: "가벼운 트렌치코트", name: "Light trench coat" },
@@ -96,6 +99,8 @@ const summerItems = {
       { ko: "숏 슬리브 셔츠", name: "Short-sleeve shirt" },
       { ko: "경량 점퍼", name: "Light jumper" },
       { ko: "와이드 팬츠", name: "Wide pants" },
+      { ko: "반팔 티셔츠", name: "Short-sleeve t-shirt" },
+      { ko: "플로럴 셔츠", name: "Floral shirt" },
       { ko: "민소매 티셔츠", name: "Sleeveless t-shirt" }
   ],
   female: [
@@ -108,6 +113,7 @@ const summerItems = {
       { ko: "린넨 팬츠", name: "Linen pants" },
       { ko: "라운지웨어 셔츠", name: "Loungewear shirt" },
       { ko: "롱 드레스", name: "Long dress" },
+      { ko: "플로럴 드레스", name: "Floral dress" },
       { ko: "라운드넥 티셔츠", name: "Round-neck t-shirt" },
       { ko: "보헤미안 드레스", name: "Bohemian dress" },
       { ko: "숏 점프수트", name: "Short jumpsuit" }
@@ -123,6 +129,7 @@ const autumnItems = {
       { ko: "터틀넥 스웨터", name: "Turtleneck sweater" },
       { ko: "플란넬 셔츠", name: "Flannel shirt" },
       { ko: "트위드 재킷", name: "Tweed jacket" },
+      { ko: "터틀넥 티셔츠", name: "Turtleneck t-shirt" },
       { ko: "슬림 팬츠", name: "Slim-fit pants" },
       { ko: "머스타드 컬러 스웨터", name: "Mustard-colored sweater" },
       { ko: "데님 팬츠", name: "Denim pants" },
@@ -133,6 +140,7 @@ const autumnItems = {
       { ko: "롱 스커트", name: "Long skirt" },
       { ko: "니트 드레스", name: "Knit dress" },
       { ko: "루즈핏 가디건", name: "Oversized cardigan" },
+      { ko: "플란넬 체크 셔츠", name: "Plaid flannel shirt" },
       { ko: "플레어 스커트", name: "Flared skirt" },
       { ko: "벨티드 코트", name: "Belted coat" },
       { ko: "버건디 셔츠", name: "Burgundy shirt" },
@@ -148,18 +156,19 @@ const winterItems = {
       { ko: "히트텍 셔츠", name: "Heat-tech shirt" },
       { ko: "코듀로이 재킷", name: "Corduroy jacket" },
       { ko: "캐시미어 코트", name: "Cashmere coat" },
-      { ko: "롱패딩", name: "Long down coat" },
       { ko: "하이넥 스웨터", name: "High-neck sweater" },
       { ko: "울 팬츠", name: "Wool pants" },
+      { ko: "무스탕", name: "Mouton coat" },
       { ko: "스웨터 드레스", name: "Sweater dress" }
   ],
   female: [
       { ko: "니트 원피스", name: "Knit one-piece" },
       { ko: "플리스 자켓", name: "Fleece jacket" },
       { ko: "극세사 셔츠", name: "Microfiber shirt" },
+      { ko: "무스탕", name: "Mouton coat" },
       { ko: "오버사이즈 코트", name: "Oversized coat" },
       { ko: "다운 베스트", name: "Down vest" },
-      { ko: "롱 니트 스웨터", name: "Long knit sweater" }
+      { ko: "니트 스웨터", name: "knit sweater" }
   ],
 };
 
