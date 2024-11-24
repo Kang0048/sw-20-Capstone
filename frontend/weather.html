@@ -16,6 +16,15 @@
     <link href="./css/weatherwidget.css" rel="stylesheet">
     <link href="./css/message_history.css" rel="stylesheet">
     <link href="./css/imageloading.css" rel="stylesheet">
+    <style>
+        /* Placeholder 스타일 */
+        #messageContent1:empty::before {
+            content: attr(data-placeholder); /* data-placeholder 속성의 텍스트를 가져옴 */
+            color: #aaa; /* placeholder 텍스트 색상 */
+            pointer-events: none; /* 클릭 불가능하게 설정 */
+            display: block; /* 블록 요소로 설정하여 줄바꿈 적용 */
+        }
+    </style>
 </head>
 
 <body>
@@ -59,11 +68,20 @@
                     </button>
 
                     <div class="textarea-container mb-3">
-                        <div id="messageContent1" class="form-control" placeholder="내용을 입력해주세요." rows="4">
+                        <div 
+                            id="messageContent1" 
+                            class="form-control" 
+                            contenteditable="true" 
+                            data-placeholder="내용을 입력해주세요" 
+                            onfocus="hidePlaceholder(this)" 
+                            onblur="showPlaceholder(this)" 
+                            style="min-height: 6em; overflow-y: auto;">
                             <a href="" id="urlContent"></a>
                         </div>
                     </div>
                 </div>
+               
+                
 
                 <div class="input-group-custom mb-4">
                     <h6 class="fw-bold mb-3">이미지 추가</h6>
@@ -148,8 +166,15 @@
 <script type="module" src="ppurio/ppurio.js"></script>
 <script type="module" src="script/ppuriosend.js"></script>
 
-
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const messageContent1 = document.getElementById('messageContent1');
+        // 초기 로드 시 placeholder가 보이도록 설정
+        if (messageContent1.textContent.trim() === '') {
+            messageContent1.textContent = ''; // 내용이 없도록 초기화
+        }
+    });
+</script>
 
 </body>
 
