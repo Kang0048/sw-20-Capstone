@@ -81,7 +81,6 @@ router.post('/generate-APIimage', async (req, res) => {
                           "photo-realistic", "cinematic lighting", "DSLR quality", "8K resolution", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
                           Ensure the background reflects the given season and weather , incorporating elements that create a cohesive and immersive scene.
                           The prompt must remain concise and under 1000 characters, ensuring there is no text in the generated image.
-                          Example Prompt: "A stylish outfit for a snowy winter day. The male model wears a deep navy woolen coat, tailored for a sleek silhouette. Underneath is an ivory turtleneck sweater paired with charcoal grey trousers. Accessories include a knitted teal scarf and matching beanie. The scene features softly falling snow in a tranquil winter forest, rendered in photo-realistic detail with cinematic lighting and shallow depth of field."
                         `,
                     },            
                     {
@@ -109,7 +108,7 @@ router.post('/generate-APIimage', async (req, res) => {
                 max_tokens: 10,
             });
 
-            const keyfashionitem = itemResponse.choices[0].message.content.trim();
+            const keyfashionitem = itemResponse.choices[0].message.content.trim().replace(/\s+/g, '');;
             keywordURL = `https://www.musinsa.com/search/goods?keyword=${keyfashionitem}&keywordType=keyword&gf=A`;
         }
         
