@@ -2,7 +2,9 @@
 body {
     height: 100%;
     margin: 0;
-    background-color: white;
+   /* background-color: white;*/
+    background-image : url('backgroundimage.png');
+    
     font-family: Arial, sans-serif;
     border: 1px solid #dee2e6;
     border-radius: 8px;

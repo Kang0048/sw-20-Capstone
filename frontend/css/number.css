@@ -91,3 +91,12 @@ h2, h3 {
         align-items: flex-start;
     }
 }
+
+/* CSS 파일 또는 <style> 태그에 추가 */
+.rounded-container {
+    border-radius: 15px; /* 모서리를 둥글게 */
+    border: 1px solid #ddd; /* 선택적으로 테두리 추가 */
+    padding: 20px; /* 내용과 테두리 간격 추가 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 선택적으로 그림자 추가 */
+    background-color: #f9f9f9; /* 선택적으로 배경색 추가 */
+}
