@@ -1,14 +1,18 @@
-// db.js
-const mysql = require('mysql2');
+// backend/db.js
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: '900212',
-  database: 'SW20',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+// 데이터베이스 파일 경로 설정
+const dbPath = path.resolve(__dirname, 'database.sqlite');
+
+// SQLite 데이터베이스 연결
+const db = new sqlite3.Database(dbPath, (err) => {
+  if (err) {
+    console.error('SQLite 데이터베이스 연결 실패:', err.message);
+  } else {
+    console.log('SQLite 데이터베이스에 연결되었습니다.');
+  }
 });
 
-module.exports = pool.promise();
+module.exports = db;

@@ -1,63 +1,72 @@
+// backend/routes/message.js
+
 const express = require('express');
 const router = express.Router();
 const db = require('../db');
-const jwt = require('jsonwebtoken');
+const multer = require('multer'); // 파일 업로드를 위한 multer
+const path = require('path');
+const fs = require('fs');
 
-// 인증 미들웨어
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token      = authHeader && authHeader.split(' ')[1];
-  if (!token) return res.status(401).json({ error: '인증 토큰이 없습니다.' });
+// 이미지 저장을 위한 디렉토리 설정
+const uploadDir = path.join(__dirname, '../uploads');
 
-  jwt.verify(token, 'your_jwt_secret', (err, user) => {
-    if (err) return res.status(403).json({ error: '유효하지 않은 토큰입니다.' });
-    req.user = user;
-    next();
-  });
+// 디렉토리 없으면 생성
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
 }
 
-// 발송 기록 조회 라우트
-router.get('/messages', authenticateToken, async (req, res) => {
-  try {
-    const [rows] = await db.execute('SELECT * FROM messages WHERE user_id = ?', [req.user.id]);
-    res.json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+// multer 설정
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    // 파일 이름을 고유하게 생성
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'image-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
 
-// 메시지 발송 라우트 (예시)
-router.post('/send', authenticateToken, async (req, res) => {
-  const { messageContent } = req.body;
-  try {
-    // 뿌리오 API를 통해 문자 발송 로직 구현 (생략)
-    // ...
+const upload = multer({ storage: storage });
 
-    // 발송 기록 저장
-    await db.execute(
-      'INSERT INTO messages (user_id, message_content) VALUES (?, ?)',
-      [req.user.id, messageContent]
-    );
+// 메시지 저장 라우트
+router.post('/send', upload.single('image'), (req, res) => {
+  const userId = req.session.userId;
+  const content = req.body.content;
+  const imageFile = req.file ? req.file.filename : null;
 
-    res.json({ message: '메시지가 발송되었습니다.' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: '서버 오류가 발생했습니다.' });
+  if (!userId) {
+    return res.status(401).json({ error: '로그인이 필요합니다.' });
   }
+
+  const query = 'INSERT INTO messages (user_id, content, image_path) VALUES (?, ?, ?)';
+  db.run(query, [userId, content, imageFile], function (err) {
+    if (err) {
+      console.error('메시지 저장 오류:', err.message);
+      res.status(500).json({ error: '메시지 저장 실패' });
+    } else {
+      res.status(200).json({ message: '메시지 저장 성공', messageId: this.lastID });
+    }
+  });
 });
 
-// 메시지 내역 조회 라우트
-router.get('/', authenticateToken, async (req, res) => {
-  const userId = req.user.id;
+// 메시지 조회 라우트
+router.get('/history', (req, res) => {
+  const userId = req.session.userId;
 
-  try {
-    const [messages] = await db.execute('SELECT * FROM messages WHERE user_id = ? ORDER BY created_at DESC', [userId]);
-    res.json({ messages });
-  } catch (error) {
-    console.error('Message Fetch Error:', error);
-    res.status(500).json({ error: '메시지 내역 조회 중 오류가 발생했습니다.' });
+  if (!userId) {
+    return res.status(401).json({ error: '로그인이 필요합니다.' });
   }
+
+  const query = 'SELECT * FROM messages WHERE user_id = ? ORDER BY created_at DESC';
+  db.all(query, [userId], (err, rows) => {
+    if (err) {
+      console.error('메시지 조회 오류:', err.message);
+      res.status(500).json({ error: '메시지 조회 실패' });
+    } else {
+      res.status(200).json({ messages: rows });
+    }
+  });
 });
 
 module.exports = router;

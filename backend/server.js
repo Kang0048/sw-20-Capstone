@@ -1,20 +1,17 @@
 // dotenv 불러오기
 const dotenv = require('dotenv');
 const path = require('path');
-// Cors 불러오기
-const cors = require('cors');
 // express 불러오기
 const express = require('express');
+// Cors 불러오기
+const cors = require('cors');
+// 세션을 위한 express-session 불러오기
+const session = require('express-session');
 // openAI 불러오기
 const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
-const { getWeatherData } = require('../weather/weather.js');
-// 이미지 생성 API 불러오기
-const openAI_Image = require('./openAI_Image');
-const openAI_Prompt = require('./openAI_prompt');
-const openAi_UserImage = require('./openAi_userImage');
-
 // 추가된 라이브러리
 const axios = require('axios');
+const fs = require('fs');
 
 // 라우트 파일 임포트
 const authRoutes = require('./routes/auth');
@@ -27,7 +24,6 @@ dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
 const app = express();
 // 포트번호 설정
 const port = 5000;
-const session = require('express-session');
 
 // 미들웨어 설정
 app.use(cors());
@@ -45,9 +41,25 @@ app.use(
   })
 );
 
+// 정적 파일 제공 (이미지 등 업로드된 파일)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 정적 파일 제공 (프론트엔드 파일)
+app.use(express.static(path.join(__dirname, '../frontend')));
+app.use('/backend', express.static(path.join(__dirname)));
+
 // 라우트 사용
 app.use('/auth', authRoutes);
 app.use('/message', messageRoutes);
+
+// 기존에 사용하시던 OpenAI 관련 라우트 사용
+const openAI_Image = require('./openAI_Image');
+const openAI_Prompt = require('./openAI_prompt');
+const openAi_UserImage = require('./openAi_userImage');
+
+app.use('/', openAI_Image);
+app.use('/', openAI_Prompt);
+app.use('/', openAi_UserImage);
 
 // CORS 문제 해결을 위한 프록시 라우트 추가
 app.post('/api/proxy', async (req, res) => {
@@ -87,6 +99,7 @@ app.post('/api/proxy', async (req, res) => {
 });
 
 // Weather API
+const { getWeatherData } = require('../weather/weather.js');
 app.get('/api/weather', async (req, res) => {
   const location = req.query.location || 'seoul'; // 기본 값: 서울
   try {
@@ -108,19 +121,10 @@ const openai = new OpenAI({
   apiKey: openaiApiKey,
 });
 
-// 정적 파일 제공
-app.use(express.static(path.join(__dirname, '../frontend')));
-app.use('/backend', express.static(path.join(__dirname)));
-
 // HTML 파일 경로 설정
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'weather.html'));
 });
-
-// OpenAI 관련 라우트 사용
-app.use('/', openAI_Image);
-app.use('/', openAI_Prompt);
-app.use('/', openAi_UserImage);
 
 // 서버 실행
 app.listen(port, () => {
