@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 메시지 전송 함수 정의
     window.sendMessage = async () => {
         console.log('sendMessage 함수 호출됨');
-
+    
         // HTML 입력 필드에서 값을 가져와 ppurioData 생성
         const ppurioData = {
             from: document.getElementById('phoneNumberInput')?.value.trim() || '', // 발신번호
@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 .filter((child) => child.id !== 'placeholderText') // 플레이스홀더 제외
                 .map((child) => child.textContent.trim())
                 .filter((num) => num), // 비어있는 값 필터링
-            content: document.getElementById('messageContent1')?.value.trim() || '', // 메시지 내용
+            content: document.getElementById('messageContent1')?.innerText.trim() || '', // 메시지 내용 수정
             image: window.selectedImageUrl || '', // 선택된 이미지 URL (전역 변수)
         };
-
+    
         // ppurioData 확인 로그
         console.log('ppurioData:', ppurioData);
-
+    
         // 데이터 유효성 검사
         if (!ppurioData.from || !ppurioData.to.length || !ppurioData.content) {
             alert('발신번호, 수신번호, 또는 문자 내용을 입력하세요.');
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             return;
         }
-
+    
         // 메시지 전송 요청
         try {
             const result = await requestSend(
