@@ -6,6 +6,7 @@ const OpenAI = require('openai');
 const fs = require('fs');
 const path = require('path');
 const db = require('../db');
+const axios = require('axios');
 
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -52,7 +53,7 @@ router.post('/generate-image', async (req, res) => {
         console.error('메시지 저장 오류:', err.message);
         res.status(500).json({ error: '메시지 저장 실패' });
       } else {
-        res.status(200).json({ message: '이미지 생성 및 저장 성공', imageUrl: '/uploads/' + uniqueFilename });
+        res.status(200).json({ message: '이미지 생성 및 저장 성공', imageUrl: `/uploads/${uniqueFilename}` });
       }
     });
   } catch (error) {
