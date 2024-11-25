@@ -1,6 +1,6 @@
 // 전역 변수: 선택된 이미지 URL
 window.selectedImageUrl = null;
-
+let selectedImageBoxId; 
 
 // 이미지 선택 함수
 function selectImage(element) {
