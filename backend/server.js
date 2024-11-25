@@ -121,6 +121,12 @@ const openai = new OpenAI({
   apiKey: openaiApiKey,
 });
 
+// 생성형 이미지 저장 설정
+const openaiRoutes = require('./routes/openai');
+
+app.use('/openai', openaiRoutes);
+
+
 // HTML 파일 경로 설정
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend', 'weather.html'));
