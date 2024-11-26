@@ -1,102 +1,147 @@
-/* 기본 스타일 */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background-color: #ffffff;
-    padding: 20px;
-    margin: 0;
-}
-
-h2, h3 {
-    color: #333;
-    margin-bottom: 16px;
+  /* 스타일 개선 */
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    padding-top: 20px;
 }
 
 .navbar {
     margin-bottom: 20px;
 }
 
-/* 폼 스타일 */
-#registerForm {
-    background: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+.main-container-phone-number {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-#registerForm .form-label {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 8px;
-}
-
-#registerForm .form-control {
-    font-size: 14px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    padding: 10px;
-}
-
-#registerForm .btn {
-    background-color: #4263eb;
-    color: #fff;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 14px;
-    border: none;
-    cursor: pointer;
-}
-
-#registerForm .btn:hover {
-    background-color: #364fc7;
-}
-
-/* 등록된 번호 목록 */
-#contactList {
-    margin-top: 16px;
-    padding: 0;
-    list-style: none;
-}
-
-#contactList .list-group-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    border: 1px solid #ddd;
     border-radius: 8px;
-    background: #ffffff;
-    margin-bottom: 10px;
-    font-size: 14px;
-    color: #333;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    max-width: 1200px;
+    margin: 0 auto;
 }
-
-#contactList .list-group-item:hover {
-    background: #f9f9f9;
-}
-
-/* 반응형 */
-@media (max-width: 768px) {
-    #registerForm, #contactList .list-group-item {
-        padding: 15px;
-    }
-
-    #registerForm .btn {
-        width: 100%;
-    }
-
-    #contactList .list-group-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-}
-
 
 .rounded-container {
-    border-radius: 15px; /* 모서리를 둥글게 */
-    border: 1px solid #ddd; /* 선택적으로 테두리 추가 */
-    padding: 20px; /* 내용과 테두리 간격 추가 */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 선택적으로 그림자 추가 */
-    background-color: #f9f9f9; /* 선택적으로 배경색 추가 */
+    border-radius: 12px;
+}
+
+h2, h3 {
+    color: #333;
+    font-weight: bold;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+}
+
+/* 버튼 스타일 */
+.btn-outline-secondary {
+    margin-right: 10px;
+}
+
+/* 리스트 항목 스타일 (카드 형태) */
+.contact-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.contact-card-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.contact-card-body {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #555;
+}
+
+.badge {
+    background-color: #007bff;
+}
+
+.contact-card-footer {
+    margin-top: 15px;
+    text-align: right;
+}
+
+/* 모달 내용 스타일 */
+.modal-dialog {
+    max-width: 600px;
+}
+
+.modal-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    justify-content: space-between;
+}
+
+.btn-primary, .btn-secondary {
+    width: 120px;
+}
+
+/* 그리드 레이아웃 */
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.col-left {
+    width: 48%;
+}
+
+.col-right {
+    width: 48%;
+}
+
+/* 모달 카드 스타일 */
+.modal-card {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.modal-card-header {
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-card-body {
+    margin-top: 10px;
+    color: #555;
+}
+
+.modal-card-footer {
+    margin-top: 15px;
+}
+
+.phone-number-item {
+    padding: 8px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.phone-number-item:hover {
+    background-color: #f1f1f1;
 }
