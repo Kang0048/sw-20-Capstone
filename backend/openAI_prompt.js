@@ -64,7 +64,7 @@ router.post('/generate-APIprompt', async (req, res) => {
             messages: [
                 {
                     role: 'system',
-                    content: "You are an employee who creates advertising text for a clothing shopping mall."
+                    content: "You are an employee who creates advertising text for a clothing shopping mall. Use appropriate emojis to enhance the appeal and readability of your text. Ensure the tone is engaging and visually inviting."
                 },
                 {
                     role: 'user',

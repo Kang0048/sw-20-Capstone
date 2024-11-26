@@ -19,18 +19,21 @@ async function generatePrompt() {
     // messageContent 처리
     if (data.prompt) {
         // 기존 내용 초기화
+        const preInput = messageContent1.innerText;
         messageContent.innerHTML = '';
-    
+        messageContent1.innerHTML = '';
+
         // <pre> 태그를 추가하여 prompt 표시
         const preElement = document.createElement('pre');
-        preElement.textContent = data.prompt;
+        preElement.textContent = data.prompt + "\n" + preInput;
     
         // <pre>에 스타일 추가 (가로 스크롤 방지, 줄바꿈 처리)
         preElement.style.whiteSpace = 'pre-wrap';  // 줄 바꿈을 적용
-        preElement.style.wordWrap = 'break-word';  // 단어가 길어지면 줄 바꿈
-    
+        
+        messageContent.innerText="";
         messageContent.appendChild(preElement);
-    
+        
+        let existingPre = messageContent.querySelector('pre');
         // 이미 <pre>가 있으면 교체, 없으면 추가
         if (existingPre) {
             existingPre.replaceWith(preElement);

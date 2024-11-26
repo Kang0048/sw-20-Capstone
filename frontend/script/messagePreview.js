@@ -14,6 +14,8 @@ function updatePreviewContent() {
       // <pre> 태그가 있으면 그 내용을 그대로 추가
     if (preElement) {
         displayMessage.innerHTML += preElement.outerHTML; // <pre> 태그 원본 그대로 추가
+    } else {
+        displayMessage.innerText += document.getElementById("messageContent1").innerText;
     }
     // <a> 태그가 있으면 그 내용을 그대로 추가
     if (linkElement) {
