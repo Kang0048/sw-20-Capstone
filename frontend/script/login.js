@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
           if (response.ok) {
               alert('로그인 성공');
               // 로그인 성공 후 이동할 페이지로 리디렉션
-              window.location.href = 'message_history.html';
+              window.location.href = 'weather.html';
           } else {
               alert(`로그인 실패: ${result.error}`);
           }
