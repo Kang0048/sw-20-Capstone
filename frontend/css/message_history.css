@@ -6,6 +6,13 @@
     grid-template-columns: 200px 1fr;
     padding: 20px;
 }
+.rounded-container {
+    border-radius: 15px; /* 모서리를 둥글게 */
+    border: 1px solid #ddd; /* 선택적으로 테두리 추가 */
+    padding: 20px; /* 내용과 테두리 간격 추가 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 선택적으로 그림자 추가 */
+    background-color: #f9f9f9; /* 선택적으로 배경색 추가 */
+}
 
 /* 카테고리 스타일 */
 .category {
@@ -97,29 +104,4 @@
 .page a:hover {
     text-decoration: underline;
     color: #007bff;
-}
-
-/* 검색 바 */
-.search {
-    position: relative;
-    display: inline-block;
-    width: 130px;
-}
-
-.search input {
-    width: 100px;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    padding: 6px 8px;
-    font-size: 0.9rem;
-}
-
-/* 검색 아이콘 스타일 수정 */
-.search img {
-    position: absolute;
-    width: 14px; /* 아이콘 너비를 줄임 */
-    height: 14px; /* 아이콘 높이를 줄임 */
-    top: 50%;
-    right: 17px;
-    transform: translateY(-50%);
 }
