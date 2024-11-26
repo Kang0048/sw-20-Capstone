@@ -8,10 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
       const username = document.getElementById('input-username').value.trim();
       const password = document.getElementById('input-password').value;
 
-      // 데이터 확인을 위한 로그 추가
-      console.log('Username:', username);
-      console.log('Password:', password);
-
       const data = {
           username: username,
           password: password,

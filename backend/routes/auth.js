@@ -5,30 +5,32 @@ const router = express.Router();
 const db = require('../db');
 const bcrypt = require('bcrypt'); // 비밀번호 암호화를 위한 bcrypt
 
-// 회원가입 라우트
+// 회원가입 라우트 수정
 router.post('/register', async (req, res) => {
-    const { username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-    // 입력값 검증
-    if (!username || !email || !password) {
-        return res.status(400).json({ error: '모든 필드를 입력해주세요.' });
-    }
+  // 입력값 검증
+  if (!username || !email || !password) {
+      return res.status(400).json({ error: '모든 필드를 입력해주세요.' });
+  }
 
-    // 비밀번호 해싱
-    const hashedPassword = await bcrypt.hash(password, 10);
+  // 비밀번호 해싱
+  const hashedPassword = await bcrypt.hash(password, 10);
 
-    const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
-    db.run(query, [username, email, hashedPassword], function (err) {
-        if (err) {
-            console.error('회원가입 오류:', err.message);
-            if (err.message.includes('UNIQUE constraint failed')) {
-                return res.status(400).json({ error: '이미 존재하는 사용자명 또는 이메일입니다.' });
-            }
-            return res.status(500).json({ error: '회원가입 실패' });
-        } else {
-            res.status(200).json({ message: '회원가입 성공', userId: this.lastID });
-        }
-    });
+  const query = 'INSERT INTO users (username, email, password) VALUES (?, ?, ?)';
+  db.run(query, [username, email, hashedPassword], function (err) {
+      if (err) {
+          console.error('회원가입 오류:', err.message);
+          if (err.message.includes('UNIQUE constraint failed')) {
+              return res.status(400).json({ error: '이미 존재하는 사용자명 또는 이메일입니다.' });
+          }
+          return res.status(500).json({ error: '회원가입 실패' });
+      } else {
+          // 회원가입 성공 후 세션에 사용자 정보 저장 (자동 로그인)
+          req.session.userId = this.lastID;
+          res.status(200).json({ message: '회원가입 및 로그인 성공', userId: this.lastID });
+      }
+  });
 });
 
 // 로그인 라우트
@@ -56,10 +58,26 @@ router.post('/login', (req, res) => {
     });
 });
 
+// 로그인 상태 확인 라우트
+router.get('/status', (req, res) => {
+  if (req.session.userId) {
+      res.status(200).json({ loggedIn: true, userId: req.session.userId });
+  } else {
+      res.status(200).json({ loggedIn: false });
+  }
+});
+
 // 로그아웃 라우트
 router.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.status(200).json({ message: '로그아웃 성공' });
+  req.session.destroy((err) => {
+      if (err) {
+          console.error('세션 파기 오류:', err);
+          return res.status(500).json({ error: '로그아웃 실패' });
+      }
+      res.clearCookie('connect.sid'); // 쿠키 제거
+      res.status(200).json({ message: '로그아웃 성공' });
+  });
 });
+
 
 module.exports = router;
