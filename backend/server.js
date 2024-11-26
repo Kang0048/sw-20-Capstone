@@ -26,7 +26,13 @@ const app = express();
 const port = 5000;
 
 // 미들웨어 설정
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5000', // 프론트엔드 실제 주소
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
 app.use(express.json({ limit: '10mb' })); // JSON 요청 크기 제한을 10MB로 설정
 app.use(express.urlencoded({ limit: '10mb', extended: true })); // URL-encoded 데이터 크기 제한
 app.use(
@@ -36,7 +42,8 @@ app.use(
     saveUninitialized: true, // 초기화되지 않은 세션을 저장할지 여부
     cookie: {
       secure: false, // HTTPS를 사용하는 경우 true로 설정
-      maxAge: 60000, // 쿠키 유효 기간 (밀리초, 1분)
+      maxAge: 600000, // 쿠키 유효 기간 (밀리초, 10분)
+      sameSite: 'lax',
     },
   })
 );
