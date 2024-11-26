@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
           return;
       }
 
-      // 이메일 유효성 검사 (기본적인 형태만 확인)
+      // 이메일 유효성 검사
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
           alert('유효한 이메일 주소를 입력해주세요.');
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                   'Content-Type': 'application/json',
               },
               body: JSON.stringify(data),
-              credentials: 'include' // 세션 유지
+              credentials: 'include' // 세션 쿠키 포함
           });
 
           const result = await response.json();

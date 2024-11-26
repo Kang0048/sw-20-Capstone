@@ -56,10 +56,26 @@ router.post('/login', (req, res) => {
     });
 });
 
+// 로그인 상태 확인 라우트
+router.get('/status', (req, res) => {
+  if (req.session.userId) {
+      res.status(200).json({ loggedIn: true, userId: req.session.userId });
+  } else {
+      res.status(200).json({ loggedIn: false });
+  }
+});
+
 // 로그아웃 라우트
 router.post('/logout', (req, res) => {
-    req.session.destroy();
-    res.status(200).json({ message: '로그아웃 성공' });
+  req.session.destroy((err) => {
+      if (err) {
+          console.error('세션 파기 오류:', err);
+          return res.status(500).json({ error: '로그아웃 실패' });
+      }
+      res.clearCookie('connect.sid'); // 쿠키 제거
+      res.status(200).json({ message: '로그아웃 성공' });
+  });
 });
+
 
 module.exports = router;
