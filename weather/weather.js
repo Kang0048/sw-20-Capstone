@@ -86,19 +86,19 @@ async function getWeatherData(location) {
             requestData(today, '0500', stationX, stationY),
             requestData(today, '0800', stationX, stationY),
             requestData(today, '1100', stationX, stationY),
-            requestData(today, '1400', stationX, stationY),
+        
         ]);
 
         // PTY 결정
         const ptyValues = allData.map(data => data.pty);
-        const skyValue = allData[4].sky; // SKY 값 가져오기
+        const skyValue = allData[3].sky; // SKY 값 가져오기
         const pty = determinePty(ptyValues, skyValue);
 
         // 데이터 정리
         const minTemp = allData[0].minTemp;
         const avgTemp = allData[0].avgTemp;
-        const sky = mapSkyCode(allData[4].sky); // SKY 매핑 적용
-        const maxTemp = allData[3].maxTemp;
+        const sky = mapSkyCode(allData[3].sky); // SKY 매핑 적용
+        const maxTemp = allData[2].maxTemp;
         const pop = allData[0].pop;
         const season = getSeason();
 
