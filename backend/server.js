@@ -16,6 +16,8 @@ const fs = require('fs');
 // 라우트 파일 임포트
 const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/message');
+const addressBooksRoutes = require('./routes/addressBooks'); // 주소록 라우트 추가
+const contactsRoutes = require('./routes/contacts'); // 연락처 라우트 추가
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
@@ -58,6 +60,9 @@ app.use('/backend', express.static(path.join(__dirname)));
 // 라우트 사용
 app.use('/auth', authRoutes);
 app.use('/message', messageRoutes);
+app.use('/addressBooks', addressBooksRoutes); // 주소록 라우트 사용
+app.use('/contacts', contactsRoutes); // 연락처 라우트 사용
+
 
 // 기존에 사용하시던 OpenAI 관련 라우트 사용
 const openAI_Image = require('./openAI_Image');
