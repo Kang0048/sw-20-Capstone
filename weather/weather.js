@@ -168,4 +168,4 @@ async function getWeatherData(location) {
     }
 }
 
-module.exports = { getWeatherData, determinePty };
+module.exports = { getWeatherData };
