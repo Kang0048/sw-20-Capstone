@@ -8,7 +8,7 @@ const XLSX = require('xlsx');
 const fs = require('fs');
 const path = require('path');
 
-// **인증 미들웨어 추가**
+// **인증 미들웨어**
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
         next();
@@ -22,7 +22,12 @@ const upload = multer({
     dest: 'uploads/',
     limits: { fileSize: 5 * 1024 * 1024 }, // 파일 크기 제한: 5MB
     fileFilter: (req, file, cb) => {
-        const allowedTypes = ['text/plain', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        const allowedTypes = [
+            'text/plain',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            // 'application/x-hwp' // HWP 파일 MIME 타입 (지원 여부에 따라 활성화)
+        ];
         if (allowedTypes.includes(file.mimetype)) {
             cb(null, true);
         } else {
@@ -36,7 +41,7 @@ router.post('/upload/:addressBookId', isAuthenticated, upload.single('contactsFi
     const userId = req.session.userId;
     const addressBookId = req.params.addressBookId;
 
-    // 주소록이 해당 사용자에게 속하는지 확인
+    // 주소록 소유자 확인
     const checkQuery = 'SELECT * FROM address_books WHERE id = ? AND user_id = ?';
     db.get(checkQuery, [addressBookId, userId], (err, row) => {
         if (err) {
@@ -59,7 +64,7 @@ router.post('/upload/:addressBookId', isAuthenticated, upload.single('contactsFi
 
         try {
             if (fileExt === '.txt') {
-                // TXT 파일 파싱
+                // TXT 파일 파싱 (각 줄: 이름,전화번호,메모)
                 const data = fs.readFileSync(filePath, 'utf8');
                 const lines = data.split('\n');
                 lines.forEach(line => {
@@ -122,7 +127,7 @@ router.get('/:addressBookId', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
     const addressBookId = req.params.addressBookId;
 
-    // 주소록이 해당 사용자에게 속하는지 확인
+    // 주소록 소유자 확인
     const checkQuery = 'SELECT * FROM address_books WHERE id = ? AND user_id = ?';
     db.get(checkQuery, [addressBookId, userId], (err, row) => {
         if (err) {
@@ -150,7 +155,7 @@ router.delete('/:addressBookId/:contactId', isAuthenticated, (req, res) => {
     const addressBookId = req.params.addressBookId;
     const contactId = req.params.contactId;
 
-    // 주소록이 해당 사용자에게 속하는지 확인
+    // 주소록 소유자 확인
     const checkQuery = 'SELECT * FROM address_books WHERE id = ? AND user_id = ?';
     db.get(checkQuery, [addressBookId, userId], (err, row) => {
         if (err) {
@@ -161,7 +166,7 @@ router.delete('/:addressBookId/:contactId', isAuthenticated, (req, res) => {
             return res.status(404).json({ error: '주소록을 찾을 수 없습니다.' });
         }
 
-        // 연락처가 해당 주소록에 속하는지 확인
+        // 연락처 소유자 확인
         const contactCheckQuery = 'SELECT * FROM contacts WHERE id = ? AND address_book_id = ?';
         db.get(contactCheckQuery, [contactId, addressBookId], (err, contactRow) => {
             if (err) {

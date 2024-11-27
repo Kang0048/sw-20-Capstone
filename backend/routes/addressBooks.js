@@ -4,8 +4,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// **인증 미들웨어 추가**
-// 사용자가 인증되었는지 확인하는 미들웨어
+// **인증 미들웨어**
 function isAuthenticated(req, res, next) {
     if (req.session.userId) {
         next();
@@ -52,12 +51,12 @@ router.delete('/:id', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
     const addressBookId = req.params.id;
 
-    // 주소록이 해당 사용자에게 속하는지 확인
+    // 주소록 소유자 확인
     const checkQuery = 'SELECT * FROM address_books WHERE id = ? AND user_id = ?';
     db.get(checkQuery, [addressBookId, userId], (err, row) => {
         if (err) {
             console.error('주소록 삭제 확인 오류:', err.message);
-            return res.status(500).json({ error: '주소록 삭제에 실패했습니다.' });
+            return res.status(500).json({ error: '주소록 삭제 확인에 실패했습니다.' });
         }
         if (!row) {
             return res.status(404).json({ error: '삭제할 주소록을 찾을 수 없습니다.' });

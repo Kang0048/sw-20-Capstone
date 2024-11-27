@@ -73,6 +73,22 @@ db.serialize(() => {
             console.log('contacts 테이블 생성 완료');
         }
     });
+
+    // message_recipients 테이블 생성
+    db.run(`
+        CREATE TABLE IF NOT EXISTS message_recipients (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            message_id INTEGER NOT NULL,
+            recipient TEXT NOT NULL,
+            FOREIGN KEY(message_id) REFERENCES messages(id) ON DELETE CASCADE
+        )
+    `, (err) => {
+        if (err) {
+            console.error('message_recipients 테이블 생성 오류:', err.message);
+        } else {
+            console.log('message_recipients 테이블 생성 완료');
+        }
+    });
 });
 
 console.log('데이터베이스 초기화 완료');
