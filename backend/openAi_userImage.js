@@ -79,7 +79,7 @@ router.post('/generate-userImage', async (req, res) => {
       userInputFix,
     } = req.body;
     console.log('사용자 입력 프롬프트: ', userInput);
-    if (userInputFix && req.session.prompt != '') {
+    if (userInputFix && req.session.lastPrompt != '') {
       const previousPrompt = req.session.lastPrompt;
       if (!previousPrompt) {
         return res
@@ -87,11 +87,11 @@ router.post('/generate-userImage', async (req, res) => {
           .json({ error: 'No previous prompt found in session.' });
       }
       prompt = await fixPrompt(previousPrompt, userInputFix);
-      req.session.prompt = prompt;
+      req.session.lastPrompt = prompt;
     }
     // 1: LLM API에 프롬프트 요청
     else {
-      req.session.prompt = '';
+      req.session.lastPrompt = '';
       const response = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
@@ -117,7 +117,7 @@ router.post('/generate-userImage', async (req, res) => {
               - Key Item: ${userItem}.
               - Gender: ${userSex}.
               Additional User Input: "${userInput}".
-              The background must reflects the ${userSeason} season and ${userWeather}, and the image should be rendered with hyper-realistic details, cinematic lighting, and a focus on DSLR-quality output.
+              The background must reflects and shows the ${userSeason} season and ${userWeather}, and the image should be rendered with hyper-realistic details, cinematic lighting, and a focus on DSLR-quality output.
             `,
           },
         ],
@@ -127,34 +127,22 @@ router.post('/generate-userImage', async (req, res) => {
       // 프롬프트 정리
       var prompt = response.choices[0].message.content.trim(); // response에서 결과 가져오기
       req.session.lastPrompt = prompt;
-      // console.log('Generated prompt:', prompt);
-      //req.session.lastPrompt = prompt;
+
     }
     prompt += `background reflects the ${userWeather}`;
-    // prompt =
-    //'a man with a tie and a coat on posing for a picture in a park with trees in the background, Edward Clark, neoclassicism, promotional image, a character portrait';
-    // "A stylish outfit designed for a snowy winter day. The male model is wearing a luxurious black leather jacket lined with soft faux fur for extra warmth. The outfit is paired with dark, slim-fit trousers, and sleek leather boots that complement the jacket's texture. Accessories include a cozy wool scarf in shades of gray and a matching pair of knitted gloves to enhance the winter feel. The background features a serene snowy landscape with gently falling snowflakes and frosted trees, creating a cozy yet sophisticated winter atmosphere. No text should be included in the image.";
-    console.log(prompt);
+    
     // 1-1: LLM API에 키워드 추출 요청
     const keywordURL = `https://www.musinsa.com/search/goods?keyword=${userItem}&keywordType=keyword&gf=A`;
-    console.log(
-      `https://www.musinsa.com/search/goods?keyword=${userItem}&keywordType=keyword&gf=A`
-    );
+    
 
     // 2: 이미지 생성 API에 요청
 
     const imageResponse = await openai.images.generate({
-      // prompt: `A hyper-realistic image of a male model wearing a tailored double-breasted gray wool coat with a high stand-up collar and sharp lapels. Underneath, he wears a thick white cable-knit sweater, paired with dark slim-fit jeans. Black leather gloves complete his refined winter look. The background features a tranquil snowy forest with snow-covered pine trees and softly falling snowflakes. The scene is illuminated with cinematic lighting, emphasizing the textures of the coat and sweater. The image is captured with DSLR quality, featuring shallow depth of field and rendered in 8K resolution for ultra-detailed realism.`,
-      prompt: prompt,
-      n: 4,
-      quality: 'hd',
-      size: '1024x1024', // Adjust size if needed
+      prompt:prompt,
+      quality:"hd",
+      n : 4,
+      size: "256x256" // , // Adjust size if needed
     });
-
-    // console.log(
-    // 'Generated Images:',
-    //imageResponse.data.map((img) => img.url)
-    // );
 
     // 3: 응답 처리
     // 이미지 URL 배열화
