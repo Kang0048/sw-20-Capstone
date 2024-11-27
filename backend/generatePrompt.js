@@ -1,5 +1,15 @@
+function msgshowLoading() {
+    const msgloadingOverlay = document.getElementById('msgloadingOverlay');
+    msgloadingOverlay.style.display = 'flex';
+  }
+  
+  function msghideLoading() {
+    const msgloadingOverlay = document.getElementById('msgloadingOverlay');
+    msgloadingOverlay.style.display = 'none';
+  }
 // generatePrompt.js
 async function generatePrompt() {
+    msgshowLoading();
     const userInput = document.getElementById('messageTitle').value;
     const location = document.getElementById('regionDropdown').value;
     const keyword = document.getElementById('keyword').value;
@@ -45,5 +55,5 @@ async function generatePrompt() {
         messageContent.innerHTML = '<p>출력 오류</p>';
         messageContent1.innerHTML = '<p>출력 오류</p>';
     }
-    
+    msghideLoading();
 }
