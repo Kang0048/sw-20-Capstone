@@ -10,12 +10,10 @@
     <link href="./css/base.css" rel="stylesheet">
     <link href="./css/navbar.css" rel="stylesheet">
     <link href="./css/button.css" rel="stylesheet">
-
     <link href="./css/form.css" rel="stylesheet">
     <link href="./css/image.css" rel="stylesheet">
     <link href="./css/layout.css" rel="stylesheet">
     <link href="./css/message_history.css" rel="stylesheet">
-
 </head>
 
 <body>
@@ -48,9 +46,9 @@
     <div class="main-container-phone-number container-fluid my-4 rounded-container">
         <div class="row">
             <!-- 좌측: 주소록 등록 폼 -->
-            <div class="col-left">
+            <div class="col-left col-md-6">
                 <h2>주소록 등록</h2>
-                <form id="registerForm" class="mt-3">
+                <form id="createAddressBookForm" class="mt-3">
                     <div class="mb-3">
                         <label for="addressBookName" class="form-label">주소록 이름</label>
                         <input type="text" class="form-control" id="addressBookName" placeholder="주소록 이름을 입력하세요" required>
@@ -79,9 +77,9 @@
             </div>
 
             <!-- 우측: 등록된 주소록 목록 -->
-            <div class="col-right">
+            <div class="col-right col-md-6">
                 <h3>등록된 주소록 목록</h3>
-                <div id="contactList">
+                <div id="addressBookList" class="mt-3">
                     <!-- 주소록 항목들이 카드 형태로 추가될 위치 -->
                 </div>
             </div>
@@ -120,11 +118,10 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS 및 스크립트 파일 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./script/number.js"></script>
-    <script src="./script/uploadpphonenumber.js"></script>
+    <script src="./script/addressBooks.js"></script> <!-- 기존의 number.js와 uploadpphonenumber.js 대체 -->
     <script src="./script/menuActivation.js"></script>
 </body>
 
 </html>
-

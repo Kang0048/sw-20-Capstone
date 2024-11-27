@@ -22,13 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             authButton.textContent = 'Login';
         }
 
-        // 기존 이벤트 리스너 제거: cloneNode 방식 대신, 하나의 이벤트 리스너로 관리
-        authButton.replaceWith(authButton.cloneNode(true));
-        const newAuthButton = document.getElementById('authButton');
-
-        // 이벤트 리스너 추가
-        newAuthButton.addEventListener('click', async () => {
-            if (newAuthButton.textContent === 'Logout') {
+        // 기존 이벤트 리스너 제거 없이 새로운 이벤트 리스너 추가
+        authButton.addEventListener('click', async () => {
+            if (authButton.textContent === 'Logout') {
                 // 로그아웃 처리
                 try {
                     const logoutResponse = await fetch('/auth/logout', {

@@ -64,7 +64,7 @@ app.use('/backend', express.static(path.join(__dirname)));
 // 라우트 사용
 app.use('/auth', authRoutes);
 app.use('/message', messageRoutes);
-app.use('/addressBooks', addressBooksRoutes); // 주소록 라우트 사용
+app.use('/address_book', addressBooksRoutes); // 주소록 라우트 사용
 app.use('/contacts', contactsRoutes); // 연락처 라우트 사용
 
 
