@@ -9,14 +9,14 @@ document.addEventListener("DOMContentLoaded", function () {
             if (regionSelect && !regionSelect.value) {
                 regionSelect.value = "seoul"; // 기본값: 서울
             }
-            updateWeatherWidget(); // 버튼 클릭 시 날씨 데이터 업데이트
+            updatemsgWeatherWidget(); // 버튼 클릭 시 날씨 데이터 업데이트
         });
     } else {
         console.error("Modal open button not found.");
     }
 });
 
-async function updateWeatherWidget() {
+async function updatemsgWeatherWidget() {
     const regionSelect = document.getElementById("regionDropdown");
 
     // region select element가 없으면 함수 종료
@@ -53,10 +53,10 @@ async function updateWeatherWidget() {
 
         // 각 요소 존재 여부 확인 후 업데이트
         const elements = {
-            "selected-value": selectedText,
-            "avgTemp": `${data.avgTemp}°`,
-            "minTemp": `${data.minTemp}°`,
-            "maxTemp": `${data.maxTemp}°`,
+            "selected-value-messageModal": selectedText,
+            "avgTemp-messageModal": `${data.avgTemp}°`,
+            "minTemp-messageModal": `${data.minTemp}°`,
+            "maxTemp-messageModal": `${data.maxTemp}°`,
             "sky": descriptionKo
         };
 
@@ -72,11 +72,11 @@ async function updateWeatherWidget() {
 
         // 기본값 표시
         const errorElements = {
-            "selected-value": selectedText,
-            "sky": "날씨 정보 없음",
-            "avgTemp": "--°",
-            "minTemp": "--°",
-            "maxTemp": "--°"
+            "selected-value-messageModal": selectedText,
+            "sky-messageModal": "날씨 정보 없음",
+            "avgTemp-messageModal": "--°",
+            "minTemp-messageModal": "--°",
+            "maxTemp-messageModal": "--°"
         };
 
         Object.entries(errorElements).forEach(([id, value]) => {

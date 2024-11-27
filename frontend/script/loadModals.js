@@ -33,7 +33,8 @@ async function loadModals() {
         './modal/messageModal.html',
         './modal/imageModal.html',
         './modal/phoneModal.html',
-        './modal/sendModal.html'
+        './modal/sendModal.html',
+        './modal/phoneadressModal.html'
     ];
     const modalContainer = document.getElementById("modalContainer");
 

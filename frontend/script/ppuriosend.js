@@ -42,9 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             console.log('전송 성공:', result);
             alert('메시지가 성공적으로 전송되었습니다.');
+            window.location.href = 'weather.html';
         } catch (error) {
             console.error('전송 실패:', error);
-            alert('메시지 전송에 실패했습니다.');
+            alert('메시지 전송에 실패했습니다. 다시 시도해 주세요.');
         }
     };
 });
