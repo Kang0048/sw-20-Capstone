@@ -1,6 +1,7 @@
 const request = require('request');
 const moment = require('moment');
 const dotenv = require('dotenv'); // dotenv 불러오기
+const path = require('path');
 
 // .env 파일의 API 키를 로드
 dotenv.config({ path: path.resolve(__dirname, '../backend/touch.env') });
