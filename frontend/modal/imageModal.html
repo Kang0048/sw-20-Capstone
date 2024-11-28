@@ -5,9 +5,8 @@
             <div class="modal-header">
                 <ul class="nav nav-tabs" id="imageModalTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="generateTab" data-bs-toggle="tab"
-                            data-bs-target="#generate" type="button" role="tab" aria-controls="generate"
-                            aria-selected="true">현재 날씨 스타일링</button>
+                        <button class="nav-link active" id="generateTab" data-bs-toggle="tab" data-bs-target="#generate"
+                            type="button" role="tab" aria-controls="generate" aria-selected="true">현재 날씨 스타일링</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="weatherTab" data-bs-toggle="tab" data-bs-target="#weather"
@@ -17,21 +16,21 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-               <!-- 로딩 오버레이 -->
-<div id="loadingOverlay" class="loading-overlay" style="display: none;">
-    <div class="loading-content">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-        <p>이미지를 생성 중입니다...</p>
-    </div>
-</div>
+                <!-- 로딩 오버레이 -->
+                <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+                    <div class="loading-content">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>이미지를 생성 중입니다...</p>
+                    </div>
+                </div>
 
                 <div class="tab-content" id="imageModalContent">
                     <!-- 현재 날씨 스타일링 탭 -->
                     <div class="tab-pane fade show active" id="generate" role="tabpanel" aria-labelledby="generateTab">
                         <div class="row d-flex align-items-stretch">
-                            
+
                             <!-- Left Column -->
                             <div class="col-lg-5">
                                 <div class="input-group-custom mb-4">
@@ -44,11 +43,13 @@
                                     <h6 class="section-title mb-3">성별 (선택)</h6>
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="form-check me-3">
-                                            <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+                                            <input class="form-check-input" type="radio" name="gender" id="male"
+                                                value="male">
                                             <label class="form-check-label" for="male">남성</label>
                                         </div>
                                         <div class="form-check me-3">
-                                            <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                                            <input class="form-check-input" type="radio" name="gender" id="female"
+                                                value="female">
                                             <label class="form-check-label" for="female">여성</label>
                                         </div>
                                     </div>
@@ -64,27 +65,27 @@
                                         <option value="sejong">세종</option>
                                         <option value="jeju">제주도</option>
                                     </select>
-                                    <h6 class="section-title mb-3"style="margin-top: 20px;">수정사항</h6>
+                                    <h6 class="section-title mb-3" style="margin-top: 20px;">수정사항</h6>
                                     <div class="d-flex mb-3">
-                                        <input type="text" class="form-control me-2"
-                                            placeholder="수정사항을 입력하세요" id="InputFix">
+                                        <input type="text" class="form-control me-2" placeholder="수정사항을 입력하세요"
+                                            id="InputFix">
                                     </div>
 
                                 </div>
-                                <div class="input-group-custom">
+                                <div class="input-group-custom-img">
                                     <h6 class="section-title mb-3">AI 자동 생성</h6>
                                     <p class="text-muted">현재 계절, 날씨를 반영하여 스타일링 이미지를 AI가 생성합니다.</p>
                                     <button class="btn btn-custom w-100" onclick="generateImages()">이미지 생성</button>
                                 </div>
-                                
-                                 <!-- 날씨 위젯 -->
+
+                                <!-- 날씨 위젯 -->
                                 <div class="weather-widget">
                                     <div id="selected-value" style="font-weight: bold;">서울</div>
                                     <div class="avgTemp" id="avgTemp">13°</div>
                                     <div class="sky" id="sky">흐림</div>
                                     <div class="temp-range">
                                         최고: <span id="maxTemp">18°</span> 최저: <span id="minTemp">10°</span>
-                                </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- Right Column -->
@@ -93,26 +94,30 @@
                                     <h6 class="section-title mb-3">생성 결과</h6>
                                     <div class="row g-3 justify-content-center">
                                         <div class="col-5">
-                                            <div class="image-result-box" id="imageBox1" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="imageBox1" onclick="selectImage(this)">+
+                                            </div>
                                         </div>
                                         <div class="col-5">
-                                            <div class="image-result-box" id="imageBox2" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="imageBox2" onclick="selectImage(this)">+
+                                            </div>
                                         </div>
                                         <div class="col-5">
-                                            <div class="image-result-box" id="imageBox3" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="imageBox3" onclick="selectImage(this)">+
+                                            </div>
                                         </div>
                                         <div class="col-5">
-                                            <div class="image-result-box" id="imageBox4" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="imageBox4" onclick="selectImage(this)">+
+                                            </div>
                                         </div>
                                     </div>
-                                    
+
                                     <button class="btn btn-secondary w-100 mt-4"
                                         onclick="confirmSelection()">확정</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- 날씨 직접 입력 탭 -->
                     <div class="tab-pane fade" id="weather" role="tabpanel" aria-labelledby="weatherTab">
                         <div class="row">
@@ -138,18 +143,20 @@
                                     <h6 class="section-title mb-3">성별 (선택)</h6>
                                     <div class="d-flex align-items-center mb-3">
                                         <div class="form-check me-3">
-                                            <input class="form-check-input" type="radio" name="gender" id="male" value="male">
+                                            <input class="form-check-input" type="radio" name="gender" id="male"
+                                                value="male">
                                             <label class="form-check-label" for="male">남성</label>
                                         </div>
                                         <div class="form-check me-3">
-                                            <input class="form-check-input" type="radio" name="gender" id="female" value="female">
+                                            <input class="form-check-input" type="radio" name="gender" id="female"
+                                                value="female">
                                             <label class="form-check-label" for="female">여성</label>
                                         </div>
                                     </div>
                                     <h6 class="section-title mb-3">수정사항</h6>
                                     <div class="d-flex mb-3">
-                                        <input type="text" class="form-control me-2"
-                                            placeholder="수정사항을 입력하세요" id="userInputFix">
+                                        <input type="text" class="form-control me-2" placeholder="수정사항을 입력하세요"
+                                            id="userInputFix">
                                     </div>
                                 </div>
                                 <div class="input-group-custom">
@@ -163,16 +170,20 @@
                                     <h6 class="section-title mb-3">생성 결과</h6>
                                     <div class="row g-3 justify-content-center">
                                         <div class="col-5">
-                                            <div class="image-result-box" id="userImageBox1" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="userImageBox1"
+                                                onclick="selectImage(this)">+</div>
                                         </div>
                                         <div class="col-5">
-                                            <div class="image-result-box" id="userImageBox2" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="userImageBox2"
+                                                onclick="selectImage(this)">+</div>
                                         </div>
                                         <div class="col-5">
-                                            <div class="image-result-box" id="userImageBox3" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="userImageBox3"
+                                                onclick="selectImage(this)">+</div>
                                         </div>
                                         <div class="col-5">
-                                            <div class="image-result-box" id="userImageBox4" onclick="selectImage(this)">+</div>
+                                            <div class="image-result-box" id="userImageBox4"
+                                                onclick="selectImage(this)">+</div>
                                         </div>
                                     </div>
                                     <button class="btn btn-secondary w-100 mt-4"

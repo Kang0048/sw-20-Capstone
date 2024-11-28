@@ -12,7 +12,14 @@
     border: 1px solid #dee2e6;
     border-radius: 8px;
 }
-
+.input-group-custom-img {
+    margin-left: auto; 
+    padding: 16px;
+    background-color: #f7f8fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    max-width: 60%; /* 최대 가로 길이 설정 */
+}
 .input-group-custom-msg {
     margin: 0 auto; /* 가로 중앙 정렬 */
     padding: 8px; /* 위아래 크기를 줄임 */
