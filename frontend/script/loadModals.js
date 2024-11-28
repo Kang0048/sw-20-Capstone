@@ -1,30 +1,29 @@
-// loadModals.js
+// frontend/script/loadModals.js
 
 document.addEventListener("DOMContentLoaded", function () {
-    loadModals(); // 모달이 완전히 로드된 후 이벤트 리스너 초기화
-    initializeEventListeners();
-    setActiveMenuItem();
+    loadModals(); // 모달을 로드
+    // initializeEventListeners(); // 중복 호출 제거
+    // setActiveMenuItem(); // 함수 정의 여부에 따라 제거 또는 정의
     const addPhoneButton = document.getElementById("addPhoneButton");
     const currentPath = window.location.pathname.split("/").pop();
     const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+    
     if (addPhoneButton) {
         addPhoneButton.addEventListener("click", addPhoneNumber);
     }
-     // 파일 선택 시 이미지 업로드 처리
-     const imageInput = document.getElementById("imageInput");
-     if (imageInput) {
-         imageInput.addEventListener("change", handleFileSelect);
-     }
-     
-       
+
+    // 파일 선택 시 이미지 업로드 처리
+    const imageInput = document.getElementById("imageInput");
+    if (imageInput) {
+        imageInput.addEventListener("change", handleFileSelect);
+    }
 
     navLinks.forEach(link => {
         // 현재 경로와 링크의 href 속성이 일치하는 경우 'active' 클래스 추가
         if (link.getAttribute("href") === currentPath) {
-               link.classList.add("active");
+            link.classList.add("active");
         }
     });
-     
 });
 
 // 모달을 로드한 후 이벤트 리스너를 초기화하는 함수
@@ -34,7 +33,7 @@ async function loadModals() {
         './modal/imageModal.html',
         './modal/phoneModal.html',
         './modal/sendModal.html',
-        './modal/phoneadressModal.html'
+        './modal/phoneaddressModal.html'
     ];
     const modalContainer = document.getElementById("modalContainer");
 
