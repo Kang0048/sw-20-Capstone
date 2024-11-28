@@ -44,7 +44,7 @@ const fixPrompt = async (originalPrompt, userFix) => {
       {
         role: 'system',
         content: `
-          You are a prompt editor. Your primary task is to modify the given prompt by incorporating the user's additional requests as accurately as possible while maintaining the original context and style.
+          You are a pro prompt editor and professional fashion assistant. Your primary task is to modify the given prompt by incorporating the user's additional requests as accurately as possible while maintaining the original context and style.
           Ensure the image contains no text. The final prompt must be concise, clear, and under 1000 characters.
           Always prioritize the user's fix requests while ensuring grammatical accuracy and coherence.
         `,
@@ -117,7 +117,7 @@ router.post('/generate-userImage', async (req, res) => {
               - Key Item: ${userItem}.
               - Gender: ${userSex}.
               Additional User Input: "${userInput}".
-              The background must reflects and shows the ${userSeason} season and ${userWeather}, and the image should be rendered with hyper-realistic details, cinematic lighting, and a focus on DSLR-quality output.
+              The background must reflects the ${userSeason} season and ${userWeather}, and the image should be rendered with hyper-realistic details, cinematic lighting, and a focus on DSLR-quality output.
             `,
           },
         ],
@@ -129,7 +129,7 @@ router.post('/generate-userImage', async (req, res) => {
       req.session.lastPrompt = prompt;
 
     }
-    prompt += `background reflects the ${userWeather}`;
+    console.log(prompt);
     
     // 1-1: LLM API에 키워드 추출 요청
     const keywordURL = `https://www.musinsa.com/search/goods?keyword=${userItem}&keywordType=keyword&gf=A`;
@@ -137,16 +137,23 @@ router.post('/generate-userImage', async (req, res) => {
 
     // 2: 이미지 생성 API에 요청
 
-    const imageResponse = await openai.images.generate({
-      prompt:prompt,
-      quality:"hd",
-      n : 4,
-      size: "256x256" // , // Adjust size if needed
-    });
-
+    const numberOfImages = 4; // 병렬로 생성할 이미지 수
+    const imagePromises = Array.from({ length: numberOfImages }).map(() =>
+      openai.images.generate({
+        prompt: prompt,
+        model: 'dall-e-3',
+        quality: 'hd',
+        n: 1,
+        size: '1024x1024',
+      })
+    );
     // 3: 응답 처리
     // 이미지 URL 배열화
-    const images = imageResponse.data.map((image) => image.url);
+    const imageResponses = await Promise.all(imagePromises);
+    console.log("사진 생성 완료");
+    const images = imageResponses.flatMap((response) =>
+      response.data.map((image) => image.url)
+    );
 
     // 사용자에게는 이미지 URL과 크기 정보를 전달
     res.json({ images: images, keywordURL: keywordURL });
