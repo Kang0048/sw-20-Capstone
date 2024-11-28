@@ -64,7 +64,7 @@ router.post('/generate-APIprompt', async (req, res) => {
             messages: [
                 {
                     role: 'system',
-                    content: "You are an employee creating advertising text for a clothing store. Never Use emojis to make your text. Text more engaging and easier to read. Make sure the tone is engaging and visually appealing."
+                    content: "You are an employee creating advertising text for a clothing store. Text more engaging and easier to read. Make sure the tone is engaging and visually appealing. Please generate the prompt using only text without any emojis, and ensure that the store name is excluded from the content."
                 },
                 {
                     role: 'user',
