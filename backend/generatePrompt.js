@@ -45,12 +45,10 @@ async function generatePrompt() {
         } else {
             // 오류 처리
             messageContent.innerHTML = '<p>출력 오류</p>';
-            messageContent1.innerHTML = '<p>출력 오류</p>';
         }
     } catch (error) {
         console.error('Error during prompt generation:', error);
         messageContent.innerHTML = '<p>서버 오류</p>';
-        messageContent1.innerHTML = '<p>서버 오류</p>';
     } finally {
         msghideLoading();
     }
