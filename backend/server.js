@@ -77,7 +77,8 @@ app.use('/', openAI_Image);
 app.use('/', openAI_Prompt);
 app.use('/', openAi_UserImage);
 
-// CORS 문제 해결을 위한 프록시 라우트 추가
+const sharp = require('sharp'); // sharp 모듈 추가
+
 app.post('/api/proxy', async (req, res) => {
   const { url, method, headers, data } = req.body; // 요청 데이터를 파싱
   try {
@@ -94,14 +95,25 @@ app.post('/api/proxy', async (req, res) => {
     if (method === 'GET' && headers['Accept'] === 'image/*') {
       const chunks = [];
       response.data.on('data', (chunk) => chunks.push(chunk));
-      response.data.on('end', () => {
-        const buffer = Buffer.concat(chunks);
-        const base64Image = buffer.toString('base64');
-        res.json({
-          name: 'image.jpg',
-          size: buffer.length,
-          data: base64Image,
-        });
+      response.data.on('end', async () => {
+        try {
+          const buffer = Buffer.concat(chunks);
+
+          // 원본 이미지를 JPEG로 변환
+          const jpegBuffer = await sharp(buffer)
+            .jpeg({ quality: 80 }) // 품질 설정 (80%)
+            .toBuffer();
+
+          const base64Image = jpegBuffer.toString('base64');
+          res.json({
+            name: 'image.jpg', // 이름을 JPEG로 설정
+            size: jpegBuffer.length, // 변환된 이미지 크기
+            data: base64Image, // Base64 인코딩된 데이터
+          });
+        } catch (sharpError) {
+          console.error('이미지 처리 실패:', sharpError.message);
+          res.status(500).json({ error: '이미지 처리 실패', message: sharpError.message });
+        }
       });
     } else {
       res.status(response.status).json(response.data);
