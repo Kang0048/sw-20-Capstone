@@ -81,7 +81,6 @@ async function createSendParams(to, from, name, content, filePath) {
     return params;
 }
 
-// 파일 첨부 파라미터 생성 함수
 async function createFileParams(filePath) {
     if (!filePath) {
         throw new Error('유효한 파일 경로가 없습니다.');
@@ -99,20 +98,62 @@ async function createFileParams(filePath) {
             },
         });
 
-        // 이미지 데이터를 Base64로 변환
+        // 이미지 데이터가 없으면 오류 발생
         if (!response.data || !response.data.data) {
             throw new Error('이미지 데이터를 가져오지 못했습니다.');
         }
 
+        // Base64 데이터를 로드하여 이미지 처리
+        const img = await loadImage(`data:image/jpeg;base64,${response.data.data}`);
+
+        // Canvas 생성 및 이미지 처리
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        // 초기 품질 설정
+        let quality = 0.9;
+        let jpegDataUrl = canvas.toDataURL('image/jpeg', quality);
+
+        // 파일 크기 확인 및 품질 조정
+        while (getFileSize(jpegDataUrl) > 400 * 1024 && quality > 0.1) {
+            quality -= 0.1; // 품질을 낮춤
+            jpegDataUrl = canvas.toDataURL('image/jpeg', quality);
+        }
+
+        // Base64 데이터 추출
+        const base64Data = jpegDataUrl.split(',')[1];
+
+        console.log(`최종 JPEG 파일 크기: ${(getFileSize(jpegDataUrl) / 1024).toFixed(2)} KB`);
+
         return {
-            size: response.data.size,
+            size: getFileSize(jpegDataUrl),
             name: fileName,
-            data: response.data.data, // Base64 인코딩된 데이터
+            data: base64Data, // Base64 인코딩된 데이터
         };
     } catch (error) {
         throw new Error('이미지를 처리하는 중 오류가 발생했습니다: ' + error.message);
     }
 }
+
+// 이미지 로드 함수
+function loadImage(base64Url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = base64Url;
+    });
+}
+
+// Base64 데이터 크기 계산 함수
+function getFileSize(base64DataUrl) {
+    const base64Length = base64DataUrl.split(',')[1].length;
+    return Math.ceil((base64Length * 3) / 4); // 바이트 단위 크기 계산
+}
+
 
 // 랜덤 키 생성 함수
 function generateRandomKey() {
