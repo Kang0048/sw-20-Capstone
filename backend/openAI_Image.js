@@ -13,9 +13,22 @@ const { getWeatherData } = require('../weather/weather');
 const { selectItem } = require('./selectitem');
 // 시즌
 const { seasonBack } = require('./seasonalprompt');
-
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
+const app = express();
+const session = require('express-session');
+
+app.use(
+    session({
+      secret: 'your-secret-key', // 세션 암호화 키
+      resave: false, // 세션을 항상 저장할지 여부
+      saveUninitialized: true, // 초기화되지 않은 세션을 저장할지 여부
+      cookie: {
+        secure: false, // HTTPS를 사용하는 경우 true로 설정
+        maxAge: 180000, // 쿠키 유효 기간 (밀리초, 1분)
+      },
+    })
+  );
 
 // OpenAI API 설정
 const openaiApiKey = process.env.OPENAI_API_KEY;
@@ -30,102 +43,130 @@ const openai = new OpenAI({
 
 // express 사용
 const router = express.Router();
-router.use(cors());
+
+const fixPrompt = async (originalPrompt, userFix) => {
+  console.log('수정사항 실행중');
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4',
+    messages: [
+      {
+        role: 'system',
+        content: `
+          You are a pro prompt editor and professional fashion assistant. Your primary task is to modify the given prompt by incorporating the user's additional requests as accurately as possible while maintaining the original context and style.
+          Ensure the image contains no text. The final prompt must be concise, clear, and under 1000 characters.
+          Always prioritize the user's fix requests while ensuring grammatical accuracy and coherence.
+        `,
+      },
+      {
+        role: 'user',
+        content: `
+          Original Prompt: "${originalPrompt}"
+          User Fix Requests: "${userFix}"
+        `,
+      },
+    ],
+  }); 
+  return response.choices[0].message.content.trim();
+};
 
 // OpenAI API를 호출하는 라우트, /generate-image 엔드포인트
 router.post('/generate-APIimage', async (req, res) => {
     console.log('이미지 전달받은 변수:', req.body); // receive 확인
+    if (!req.session.lastPrompt) {
+        req.session.lastPrompt = ''; // 기본값 설정
+        console.log('Initializing lastPrompt in session');
+    }
     try {
         // 사용자에게 받은 텍스트
-        const { userKeyword, userLoc, userGender} = req.body;
+        const { userKeyword, userLoc, userGender, userInputFix} = req.body;
 
         // 날씨 데이터 가져오기
         const weatherData = await getWeatherData(userLoc); // 기본 위치는 서울
-
-        let lastPrompt;
         let keywordURL;
         const season = weatherData.season;
         const pty = weatherData.pty;
 
-        // 패션아이템 선정
-        if(userKeyword && userKeyword != "")
-        {
-            const itemResponse = await openai.chat.completions.create({
-                model: "gpt-4",
-                messages: [
-                    { role: "system", content: "You are a translator from Korean to English." },
-                    { role: "user", content: `Translate the following fashion item from Korean to English: ${userKeyword}. you just return one word.` }
-                ],
-                temperature: 0,
-                max_tokens: 10,
-            });
-
-            const fashion_item = itemResponse.choices[0].message.content.trim();
-            
-            lastPrompt = `A ${userGender} person stands in a ${season}-themed background subtly reflecting ${season} with ${seasonBack(season)}. The ${fashion_item} is fully visible from shoulders to feet, showing both the upper and lower parts clearly, without cropping the lower half. The ${fashion_item} features realistic textures, natural folds, and precise details, with no background reflections or patterns to ensure clear separation. The clothing has a sophisticated, stylish look with a tailored fit and subtle design elements like fading, stitching, or modern accents. Soft, realistic lighting highlights the ${fashion_item}, while the background complements it without overpowering. The person's gender is reflected in the clothing style and fit, with shadows emphasizing the ${fashion_item} and making it the central focus, harmonizing with the seasonal theme.`
-            keywordURL = `https://www.musinsa.com/search/goods?keyword=${userKeyword}&keywordType=keyword&gf=A`;
+        if (userInputFix && req.session.lastPrompt != '') {
+            const previousPrompt = req.session.lastPrompt;
+            if (!previousPrompt) {
+              return res
+                .status(400)
+                .json({ error: 'No previous prompt found in session.' });
+            }
+            prompt = await fixPrompt(previousPrompt, userInputFix);
+            req.session.lastPrompt = prompt;
         }
-        else  // 패션 아이템 랜덤 지정
-        {
-            const fashion_item = selectItem(pty, season, userGender);
+        else{
+            req.session.lastPrompt = '';
             const response = await openai.chat.completions.create({
-                model: 'gpt-4-turbo',
+                model: 'gpt-4',
                 messages: [
-                    {
-                        role: 'system',
-                        content: `
-                          You are a professional fashion assistant specializing in creating hyper-realistic and stylized digital art prompts for a fashion image generation AI.
-                          Your task is to describe the outfit and its components in rich detail, including materials, colors, and their suitability for the given season, weather, and gender.
-                          Add descriptive elements to enhance the visual appeal, such as the style, texture, and purpose of the clothing items.
-                          Integrate high-quality visual cues and camera-related keywords, such as:
-                          "photo-realistic", "cinematic lighting", "DSLR quality", "8K resolution", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
-                          Ensure the background reflects the given season and weather , incorporating elements that create a cohesive and immersive scene.
-                          The prompt must remain concise and under 1000 characters, ensuring there is no text in the generated image.
-                        `,
-                    },            
-                    {
-                        role: 'user',
-                        content: `
-                        Generate a fashion image prompt using:
-                        Season: ${season}.
-                        Weather: ${pty}.
-                        background: ${seasonBack(season)}.
-                        Gender: ${userGender}.
-                        `,
-                    },
+                  {
+                    role: 'system',
+                    content: `
+                      You are a professional fashion assistant specializing in creating hyper-realistic and stylized digital art prompts for a fashion image generation AI.
+                      Your task is to describe the outfit and its components in rich detail, including materials, colors, and their suitability for the given season, weather, and gender.
+                      Add descriptive elements to enhance the visual appeal, such as the style, texture, and purpose of the clothing items.
+                      Integrate high-quality visual cues and camera-related keywords, such as:
+                      "photo-realistic", "cinematic lighting", "DSLR quality", "8K resolution", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
+                      Ensure the background reflects the given season and weather , incorporating elements that create a cohesive and immersive scene.
+                      The prompt must remain concise and under 1000 characters, ensuring there is no text in the generated image.
+                      Example Prompt: "A stylish outfit for a snowy winter day. The male model wears a deep navy woolen coat, tailored for a sleek silhouette. Underneath is an ivory turtleneck sweater paired with charcoal grey trousers. Accessories include a knitted teal scarf and matching beanie. The scene features softly falling snow in a tranquil winter forest, rendered in photo-realistic detail with cinematic lighting and shallow depth of field."
+                    `,
+                  },
+                  {
+                    role: 'user',
+                    content: `
+                      Generate a detailed fashion image prompt using the following parameters:
+                      - Season: ${season}.
+                      - Weather: ${pty}.
+                      - Key Item: ${userKeyword}.
+                      - Gender: ${userGender}.
+                      The background must reflects the ${season} season and ${pty}, and the image should be rendered with hyper-realistic details, cinematic lighting, and a focus on DSLR-quality output.
+                    `,
+                  },
                 ],
-            });
-
-            lastPrompt = response.choices[0].message.content.trim();
-            
-            const itemResponse = await openai.chat.completions.create({
-                model: "gpt-4",
-                messages: [
-                    { role: "system", content: "You are a fashion designer. you find main item and translate from Korean to English." },
-                    { role: "user", content: `Generate a main fashion item in prompt: ${lastPrompt}. you just return one word.` }
-                ],
-                temperature: 0,
-                max_tokens: 10,
-            });
-
-            const keyfashionitem = itemResponse.choices[0].message.content.trim().replace(/\s+/g, '');;
-            keywordURL = `https://www.musinsa.com/search/goods?keyword=${keyfashionitem}&keywordType=keyword&gf=A`;
+              });
+           
+            var prompt = response.choices[0].message.content.trim(); // response에서 결과 가져오기
+            req.session.lastPrompt = prompt;
         }
-        
-        console.log('최종 프롬프트:', lastPrompt); // 프롬프트 확인
-        
-        console.log(`${keywordURL}`); //URL확인
 
-       // DALL-E 3 이미지 생성 요청
-       const imageResponse = await openai.images.generate({
-        model: "dall-e-3",
-        prompt: lastPrompt,
-        n: 1,
-        size: "1024x1024",
-    });
+                console.log('최종 프롬프트:', prompt); // 프롬프트 확인
+                const itemResponse = await openai.chat.completions.create({
+                    model: "gpt-4",
+                    messages: [
+                        { role: "system", content: "You are a fashion designer. you find main item and translate from Korean to English." },
+                        { role: "user", content: `Generate a main fashion item in prompt: ${req.session.lastPrompt}. you just return one korean word.` }
+                    ],
+                    temperature: 0,
+                    max_tokens: 10,
+                });
 
-    const images = imageResponse.data.map(image => image.url);
-    res.json({ images: images });
+                const keyfashionitem = itemResponse.choices[0].message.content.trim().replace(/\s+/g, '');;
+                keywordURL = `https://www.musinsa.com/search/goods?keyword=${keyfashionitem}&keywordType=keyword&gf=A`;
+                    
+                console.log(`${keywordURL}`); //URL확인
+
+        // DALL-E 3 이미지 생성 요청
+        const numberOfImages = 4; // 병렬로 생성할 이미지 수
+        const imagePromises = Array.from({ length: numberOfImages }).map(() =>
+            openai.images.generate({
+                prompt: prompt,
+                model: 'dall-e-3',
+                quality: 'hd',
+                n: 1,
+                size: '1024x1024',
+            })
+        );
+        // 3: 응답 처리
+        // 이미지 URL 배열화
+        const imageResponses = await Promise.all(imagePromises);
+        console.log("사진 생성 완료");
+        const images = imageResponses.flatMap((response) =>
+        response.data.map((image) => image.url)
+        );
+    res.json({ images: images, keywordURL: keywordURL });
 } catch (error) {
     console.error('Error response from OpenAI:', error.response?.data || error.message);
     res.status(500).json({ error: 'Failed to generate images.', details: error.response?.data || error.message });

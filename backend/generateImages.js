@@ -13,7 +13,7 @@ async function generateImages() {
     const userKeyword = document.getElementById('userKeyword').value;
     const userLoc = document.getElementById('region').value;
     const userGender = checkGender('male', 'female');
-    const InputFix = document.getElementById('InputFix').value;
+    const userInputFix = document.getElementById('InputFix').value;
     const urlContent = document.getElementById('urlContent');
 
     const response = await fetch('http://127.0.0.1:5000/generate-APIimage', {
@@ -21,7 +21,7 @@ async function generateImages() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userKeyword: userKeyword, userLoc: userLoc, userGender: userGender, InputFix: InputFix })
+        body: JSON.stringify({ userKeyword: userKeyword, userLoc: userLoc, userGender: userGender, userInputFix: userInputFix })
     });
 
     const data = await response.json();
