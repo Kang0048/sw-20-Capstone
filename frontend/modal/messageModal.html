@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body-message" style="display: flex; height: calc(100% - 56px);">
                 <!-- Left Section -->
-                <div class="input-section" style="flex: 0 0 40%; padding-right: 20px; overflow-y: auto;">
+                <div class="input-section" style="flex: 0 0 40%; padding-right: 20px; max-height: 450px;overflow-y: auto;">
                     <h6 class="section-title">발송 목적 및 내용</h6>
                     <input type="text" id="messageTitle" class="form-control mb-2"
                         placeholder="ex > 겨울 맞이 30% 할인 프로모션 진행, 블랙프라이데이 진행 최대 80% 할인" rows="4">
@@ -16,7 +16,7 @@
                     <div class="d-flex mb-3">
                         <input type="text" id="keyword" class="form-control me-2" placeholder="입력한 키워드가 생성결과에 포함될 확률이 높아집니다.">
                     </div>
-                    <h6 class="section-title mb-3">지역 (선택)</h6>
+                    <h6 class="section-title mb-3"style="margin-top: 20px;">지역 (선택)</h6>
                     <select class="form-select region-select" id="regionDropdown" onchange="updatemsgWeatherWidget()">
                         <option value="seoul" selected>서울</option>
                         <option value="busan">부산</option>
@@ -39,15 +39,24 @@
                         </div>
                     </div>
 
-                    <div class="input-group-custom-msg">
+                    <div class="input-group-custom-msg"style="margin-top: 20px;">
                         <h6 class="section-title mb-3">메세지 자동 생성</h6>
                         <p class="text-muted">AI가 입력된 발송 목적 및 내용에 적합한 메시지 내용을 생성합니다.</p>
                         <button class="btn btn-custom w-100" onclick="generatePrompt()">AI 자동생성</button>
                     </div>
                 </div>
-
+               <!-- 로딩 오버레이 -->
+               <div id="msgloadingOverlay" class="loading-overlay" style="display: none;">
+                    <div class="loading-content">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p>메세지를 생성 중입니다...</p>
+                    </div>
+                </div>
+            
                 <!-- Right Section -->
-                <div class="result-section">
+                <div class="result-section" style="max-height: 95%;overflow-y: auto;">
                     <label for="messageContent" style="font-weight: bold;">생성결과</label>
                     <div id="messageContent">
                         생성결과가 없습니다.

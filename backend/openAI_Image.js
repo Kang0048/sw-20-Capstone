@@ -116,23 +116,20 @@ router.post('/generate-APIimage', async (req, res) => {
         
         console.log(`${keywordURL}`); //URL확인
 
-        // 2: 이미지 생성 API에 요청
-        const imageResponse = await openai.images.generate({
-            prompt: lastPrompt, // 프롬프트를 JSON 형식으로 전달
-            n: 4, // 생성할 이미지 수
-            quality:"hd",
-            size: "256x256" // 이미지 크기
-        });
+       // DALL-E 3 이미지 생성 요청
+       const imageResponse = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: lastPrompt,
+        n: 1,
+        size: "1024x1024",
+    });
 
-        // 3: 응답 처리
-        // 이미지 URL 배열화
-        const images = imageResponse.data.map(image => image.url);
-        // 사용자에게는 이미지 URL과 크기 정보를 전달
-        res.json({ images: images,  keywordURL: keywordURL });
-    } catch (error) {
-        console.error('Error with OpenAI API request:', error.message);
-        res.status(500).json({ error: 'An error occurred while processing your request.' });
-    }
+    const images = imageResponse.data.map(image => image.url);
+    res.json({ images: images });
+} catch (error) {
+    console.error('Error response from OpenAI:', error.response?.data || error.message);
+    res.status(500).json({ error: 'Failed to generate images.', details: error.response?.data || error.message });
+}
 });
 
 module.exports = router;

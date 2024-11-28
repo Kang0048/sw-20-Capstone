@@ -13,6 +13,7 @@ async function generateImages() {
     const userKeyword = document.getElementById('userKeyword').value;
     const userLoc = document.getElementById('region').value;
     const userGender = checkGender('male', 'female');
+    const InputFix = document.getElementById('InputFix').value;
     const urlContent = document.getElementById('urlContent');
 
     const response = await fetch('http://127.0.0.1:5000/generate-APIimage', {
@@ -20,7 +21,7 @@ async function generateImages() {
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ userKeyword: userKeyword, userLoc: userLoc, userGender: userGender})
+        body: JSON.stringify({ userKeyword: userKeyword, userLoc: userLoc, userGender: userGender, InputFix: InputFix })
     });
 
     const data = await response.json();
@@ -75,13 +76,13 @@ async function generateImages() {
         // URL이 없을 경우 초기화
         if (urlContent) {
             urlContent.href = '';
-            urlContent.textContent = 'No URL available';
+            urlContent.textContent = 'No URL available12';
         }
         if (messageContent1) {
             const linkElement = messageContent1.querySelector('a');
             if (linkElement) {
                 linkElement.href = '';
-                linkElement.textContent = 'No URL available';
+                linkElement.textContent = 'No URL available34';
             }
         }
     }
