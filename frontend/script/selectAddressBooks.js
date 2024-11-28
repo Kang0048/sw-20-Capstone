@@ -92,50 +92,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 수신번호 추가 함수 (중복 방지)
         function addRecipient(phoneNumber) {
-            const existingRecipients = recipientList.querySelectorAll('.recipient-item');
-            for (const recipient of existingRecipients) {
-                if (recipient.querySelector('.phone-number').textContent.trim() === phoneNumber) {
-                    alert(`이미 "${phoneNumber}" 번호가 추가되어 있습니다.`);
-                    return;
-                }
+            const phoneInput = document.getElementById('phoneInput'); // textarea 요소
+            const existingNumbers = phoneInput.value.split('\n').map(num => num.trim()); // 기존 번호들
+        
+            if (existingNumbers.includes(phoneNumber)) {
+                alert(`이미 "${phoneNumber}" 번호가 추가되어 있습니다.`);
+                return;
             }
-
-            // 새로운 수신번호 항목 생성
-            const recipientItem = document.createElement('div');
-            recipientItem.classList.add('recipient-item', 'd-flex', 'align-items-center', 'mb-2');
-
-            const phoneSpan = document.createElement('span');
-            phoneSpan.textContent = phoneNumber;
-            phoneSpan.classList.add('me-2', 'phone-number');
-
-            const removeButton = document.createElement('button');
-            removeButton.classList.add('btn', 'btn-sm', 'btn-danger');
-            removeButton.textContent = '삭제';
-            removeButton.addEventListener('click', () => {
-                recipientList.removeChild(recipientItem);
-                updateTotalCount();
-                if (recipientList.children.length === 0) {
-                    placeholderText.style.display = 'block';
-                }
-            });
-
-            recipientItem.appendChild(phoneSpan);
-            recipientItem.appendChild(removeButton);
-            recipientList.appendChild(recipientItem);
-
-            // 자리 표시 텍스트 숨기기
-            placeholderText.style.display = 'none';
-
-            updateTotalCount();
+        
+            // 새로운 번호 추가 (줄바꿈 포함)
+            phoneInput.value += (phoneInput.value ? '\n' : '') + phoneNumber;
         }
-
-        // 총 인원 업데이트 함수
-        function updateTotalCount() {
-            const totalCount = recipientList.querySelectorAll('.recipient-item').length;
-            totalCountElement.textContent = `전체 ${totalCount}명`;
-        }
+        
 
         // 모달 열릴 때 주소록 목록 로드
         addressModalElement.addEventListener('shown.bs.modal', loadAddressBooksInModal);
