@@ -1,8 +1,14 @@
 // Axios는 브라우저에서 전역 객체로 로드되었음을 가정 (CDN을 통해)
 // 설정 상수 선언
+const dotenv = require('dotenv');
+const path = require('path');
+
+// .env 파일의 API 키를 로드 (파일 경로 지정)
+dotenv.config({ path: path.resolve(__dirname, '../../backend/touch.env') });
+
 const TIME_OUT = 5000;
-const API_KEY = '6e84ebeb9c8eb9215c1d3f8de4de4fa7598cea2719f94ccb6a9109d35d4f5345';
-const PPURIO_ACCOUNT = 'cap123';
+const API_KEY = process.env.API_KEY;
+const PPURIO_ACCOUNT = process.env.PPURIO_ACCOUNT;
 const PROXY_URL = 'http://localhost:5000/api/proxy'; // 프록시 서버 URL
 
 // 문자 발송 요청 함수

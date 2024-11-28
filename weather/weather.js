@@ -1,8 +1,12 @@
 const request = require('request');
 const moment = require('moment');
+const dotenv = require('dotenv'); // dotenv 불러오기
 
-// 기상청 API 서비스 키
-const serviceKey = 'u9djILD%2FxDioJMqtlTR7n0xl4ALy0rrGF4nyTKdGmAGZQ5PREnq4VbkP1wNnBf21m7XDE8mDDqI74NJEPjX2jQ%3D%3D';
+// .env 파일의 API 키를 로드
+dotenv.config({ path: path.resolve(__dirname, '../backend/touch.env') });
+
+// 기상청 API 서비스 키를 환경 변수에서 가져오기
+const serviceKey = process.env.WEATHER_SERVICE_KEY;
 
 // 지역별 X, Y 좌표 매핑
 // 기상청 API에서 사용하는 좌표로 변환
