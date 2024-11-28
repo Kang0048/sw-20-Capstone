@@ -12,10 +12,13 @@ const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
 // 추가된 라이브러리
 const axios = require('axios');
 const fs = require('fs');
+const morgan = require('morgan'); // 로깅 도구 추가
 
 // 라우트 파일 임포트
 const authRoutes = require('./routes/auth');
 const messageRoutes = require('./routes/message');
+const addressBooksRoutes = require('./routes/addressBooks'); // 주소록 라우트 추가
+const contactsRoutes = require('./routes/contacts'); // 연락처 라우트 추가
 
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
@@ -27,11 +30,14 @@ const port = 5000;
 
 // 미들웨어 설정
 app.use(cors({
-  origin: 'http://localhost:5000', // 프론트엔드 실제 주소
+  origin: 'http://localhost:5000',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+// 로깅 미들웨어 추가
+app.use(morgan('combined'));
 
 app.use(express.json({ limit: '10mb' })); // JSON 요청 크기 제한을 10MB로 설정
 app.use(express.urlencoded({ limit: '10mb', extended: true })); // URL-encoded 데이터 크기 제한
@@ -39,10 +45,10 @@ app.use(
   session({
     secret: 'your-secret-key', // 세션 암호화 키
     resave: false, // 세션을 항상 저장할지 여부
-    saveUninitialized: true, // 초기화되지 않은 세션을 저장할지 여부
+    saveUninitialized: false, // 초기화되지 않은 세션을 저장할지 여부
     cookie: {
       secure: false, // HTTPS를 사용하는 경우 true로 설정
-      maxAge: 600000, // 쿠키 유효 기간 (밀리초, 10분)
+      maxAge: 6000000, // 쿠키 유효 기간 (밀리초, 100분)
       sameSite: 'lax',
     },
   })
@@ -58,6 +64,9 @@ app.use('/backend', express.static(path.join(__dirname)));
 // 라우트 사용
 app.use('/auth', authRoutes);
 app.use('/message', messageRoutes);
+app.use('/address_book', addressBooksRoutes); // 주소록 라우트 사용
+app.use('/contacts', contactsRoutes); // 연락처 라우트 사용
+
 
 // 기존에 사용하시던 OpenAI 관련 라우트 사용
 const openAI_Image = require('./openAI_Image');

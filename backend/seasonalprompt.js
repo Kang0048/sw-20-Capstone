@@ -1,17 +1,17 @@
 const seasonalPrompts = [
     // 봄
-    "vibrant colors, blooming flowers, fresh greenery",
+    "cherry blossoms in bloom, fresh greenery, and soft sunlight",
     // 여름
-    "golden sunlight, sparkling ocean, sandy shoreline",
+    "golden sunlight, calm waves, and palm trees swaying gently",
     // 가을
-    "golden leaves, maple trees, soft sunlight, crisp air",
+    "golden leaves, red foliage, and warm sunlight filtering through",
     // 겨울
-    "frosted trees, icy branches, serene landscape, misty air",
+    "snow-covered ground, bare tree branch, and serene mist",
     // 비
-    "soft rain, overcast sky, puddles reflecting light",
+    "gentle rain, small puddles, cloudy skies",
     // 눈
-    "falling snowflakes, quiet winter landscape, snow-covered ground"
- ];
+    "snowflakes falling, snowy rooftops, and a peaceful white landscape"
+];
 
 function seasonBack( season ){
     switch(season){

@@ -1,36 +1,27 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
-    const modalButton = document.getElementById("open-msgModalButton"); // 모달을 여는 버튼 ID
+    const modalButton = document.getElementById("open-msgModalButton"); // 모달 열기 버튼 ID
+    const regionSelect = document.getElementById("regionDropdown"); // 드롭다운 ID
 
     if (modalButton) {
         modalButton.addEventListener("click", function () {
-            setTimeout(() => {
-                const messageModal = document.getElementById("messageModal");
-                const regionSelect = document.getElementById("regionDropdown");
-
-                if (messageModal) {
-                    // 모달 열릴 때 초기화
-                    messageModal.addEventListener("shown.bs.modal", () => {
-                        if (regionSelect && !regionSelect.value) {
-                            regionSelect.value = "seoul"; // 기본값 설정
-                        }
-                        updateWeatherWidgetModal(); // 날씨 데이터 업데이트
-                    });
-                } else {
-                    console.error("Message modal not found after button click.");
-                }
-            }, 0); // 모달 DOM이 생성될 시간을 확보
+            if (regionSelect && !regionSelect.value) {
+                regionSelect.value = "seoul"; // 기본값: 서울
+            }
+            updatemsgWeatherWidget(); // 버튼 클릭 시 날씨 데이터 업데이트
         });
     } else {
         console.error("Modal open button not found.");
     }
 });
 
-async function updateWeatherWidgetModal() {
+async function updatemsgWeatherWidget() {
     const regionSelect = document.getElementById("regionDropdown");
-    
-    // regionDropdown 요소 확인
+
+    // region select element가 없으면 함수 종료
     if (!regionSelect) {
-        console.error("Region dropdown element not found. Widget update skipped.");
+        console.log("Region select element not found. Widget update skipped.");
         return;
     }
 
@@ -38,20 +29,35 @@ async function updateWeatherWidgetModal() {
     const selectedText = regionSelect.options[regionSelect.selectedIndex]?.text || "서울";
 
     try {
+        // API 요청
         const response = await fetch(`/api/weather?location=${encodeURIComponent(selectedValue)}`);
         if (!response.ok) {
-            throw new Error(`날씨 데이터를 가져오는데 실패했습니다: ${response.statusText}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
 
-        // UI 업데이트
+        // 하늘 상태 한국어 번역
+        let descriptionKo = '';
+        if (data.sky === 'Clear') {
+            descriptionKo = '맑음';
+        } else if (data.sky === 'Partly Cloudy') {
+            descriptionKo = '부분 흐림';
+        } else if (data.sky === 'Mostly Cloudy') {
+            descriptionKo = '대체로 흐림';
+        } else if (data.sky === 'Overcast') {
+            descriptionKo = '흐림';
+        } else {
+            descriptionKo = '알 수 없음';
+        }
+
+        // 각 요소 존재 여부 확인 후 업데이트
         const elements = {
             "selected-value-messageModal": selectedText,
             "avgTemp-messageModal": `${data.avgTemp}°`,
             "minTemp-messageModal": `${data.minTemp}°`,
             "maxTemp-messageModal": `${data.maxTemp}°`,
-            "sky-messageModal": data.sky
+            "sky": descriptionKo
         };
 
         Object.entries(elements).forEach(([id, value]) => {
@@ -60,6 +66,7 @@ async function updateWeatherWidgetModal() {
                 element.textContent = value;
             }
         });
+
     } catch (error) {
         console.error("날씨 위젯 업데이트 오류:", error);
 

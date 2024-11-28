@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 async function updateWeatherWidget() {
     const regionSelect = document.getElementById("region");
-    
+
     // region select element가 없으면 함수 종료
     if (!regionSelect) {
         console.log("Region select element not found. Widget update skipped.");
@@ -27,12 +27,27 @@ async function updateWeatherWidget() {
     const selectedText = regionSelect.options[regionSelect.selectedIndex]?.text || "서울";
 
     try {
+        // API 요청
         const response = await fetch(`/api/weather?location=${encodeURIComponent(selectedValue)}`);
         if (!response.ok) {
-            throw new Error(`날씨 데이터를 가져오는데 실패했습니다: ${response.statusText}`);
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+
+        // 하늘 상태 한국어 번역
+        let descriptionKo = '';
+        if (data.sky === 'Clear') {
+            descriptionKo = '맑음';
+        } else if (data.sky === 'Partly Cloudy') {
+            descriptionKo = '부분 흐림';
+        } else if (data.sky === 'Mostly Cloudy') {
+            descriptionKo = '대체로 흐림';
+        } else if (data.sky === 'Overcast') {
+            descriptionKo = '흐림';
+        } else {
+            descriptionKo = '알 수 없음';
+        }
 
         // 각 요소 존재 여부 확인 후 업데이트
         const elements = {
@@ -40,7 +55,7 @@ async function updateWeatherWidget() {
             "avgTemp": `${data.avgTemp}°`,
             "minTemp": `${data.minTemp}°`,
             "maxTemp": `${data.maxTemp}°`,
-            "sky": data.sky
+            "sky": descriptionKo
         };
 
         Object.entries(elements).forEach(([id, value]) => {
@@ -49,6 +64,7 @@ async function updateWeatherWidget() {
                 element.textContent = value;
             }
         });
+
     } catch (error) {
         console.error("날씨 위젯 업데이트 오류:", error);
 
