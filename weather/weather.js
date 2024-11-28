@@ -130,22 +130,25 @@ function requestData(baseDate, baseTime, stationX, stationY) {
 // 날씨 데이터 요청 함수
 // 지역별로 날씨 데이터를 가져오고 필요한 정보를 반환
 async function getWeatherData(location) {
-    const today = moment().format('YYYYMMDD');
+    // 오늘 대신 어제의 날짜를 사용
+    const yesterday = moment().subtract(1, 'days').format('YYYYMMDD');
     const { x: stationX, y: stationY } = locationMapping[location] || locationMapping.seoul;
 
     try {
         // 모든 base_time에서 데이터를 요청
-        const tempPromises = validBaseTimes.map(baseTime => requestData(today, baseTime, stationX, stationY).catch(() => null));
+        const tempPromises = validBaseTimes.map(baseTime => requestData(yesterday, baseTime, stationX, stationY).catch(() => null));
         const tempData = await Promise.all(tempPromises);
 
         // 유효한 TMN 값 찾기
-        const minTemps = tempData.filter(data => data && data.minTemp !== null).map(data => data.minTemp);
+        const minTemps = tempData
+            .flatMap(data => (data && data.minTemp !== null ? [data.minTemp] : []))
+            .map(value => parseFloat(value)); // 문자열을 숫자로 변환
 
-        // 최저 기온 설정 (첫 번째 유효한 값)
-        const minTemp = minTemps.length > 0 ? minTemps[0] : null;
+        // 최저 기온 설정 (모든 baseTime에서 가장 낮은 값)
+        const minTemp = minTemps.length > 0 ? Math.min(...minTemps) : null;
 
         // 특정 base_time 데이터 가져오기 (1100 사용)
-        const specificData = await requestData(today, '1100', stationX, stationY);
+        const specificData = await requestData(yesterday, '1100', stationX, stationY);
 
         if (!specificData) throw new Error('유효한 데이터를 가져올 수 없습니다.');
 
@@ -156,7 +159,7 @@ async function getWeatherData(location) {
         return {
             location,
             avgTemp: specificData.avgTemp,
-            minTemp,
+            minTemp, // 모든 데이터에서 가장 낮은 TMN 값
             maxTemp: specificData.maxTemp,
             sky: mapSkyCode(specificData.sky),
             pop: specificData.pop,
