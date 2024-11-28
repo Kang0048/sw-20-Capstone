@@ -1,5 +1,7 @@
 // dotenv 불러오기
 const dotenv = require('dotenv');
+const fs = require('fs');
+const axios = require('axios');
 const path = require('path');
 // express 불러오기
 const express = require("express");
@@ -10,9 +12,9 @@ const OpenAI = require('openai'); // OpenAI를 기본으로 가져옴
 // 날씨 API
 const { getWeatherData } = require('../weather/weather');
 // 패션아이템
-const { selectItem } = require('./selectitem');
+// const { selectItem } = require('./selectitem');
 // 시즌
-const { seasonBack } = require('./seasonalprompt');
+// const { seasonBack } = require('./seasonalprompt');
 // .env 파일의 API 키를 로드 (파일 경로 지정)
 dotenv.config({ path: path.resolve(__dirname, 'touch.env') });
 const app = express();
@@ -82,7 +84,6 @@ router.post('/generate-APIimage', async (req, res) => {
 
         // 날씨 데이터 가져오기
         const weatherData = await getWeatherData(userLoc); // 기본 위치는 서울
-        let keywordURL;
         const season = weatherData.season;
         const pty = weatherData.pty;
 
@@ -108,7 +109,7 @@ router.post('/generate-APIimage', async (req, res) => {
                       Your task is to describe the outfit and its components in rich detail, including materials, colors, and their suitability for the given season, weather, and gender.
                       Add descriptive elements to enhance the visual appeal, such as the style, texture, and purpose of the clothing items.
                       Integrate high-quality visual cues and camera-related keywords, such as:
-                      "photo-realistic", "cinematic lighting", "DSLR quality", "8K resolution", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
+                      "photo-realistic", "cinematic lighting", "shallow depth of field", "ultra-detailed", and "hyper-realistic".
                       Ensure the background reflects the given season and weather , incorporating elements that create a cohesive and immersive scene.
                       The prompt must remain concise and under 1000 characters, ensuring there is no text in the generated image.
                       Example Prompt: "A stylish outfit for a snowy winter day. The male model wears a deep navy woolen coat, tailored for a sleek silhouette. Underneath is an ivory turtleneck sweater paired with charcoal grey trousers. Accessories include a knitted teal scarf and matching beanie. The scene features softly falling snow in a tranquil winter forest, rendered in photo-realistic detail with cinematic lighting and shallow depth of field."
@@ -132,21 +133,22 @@ router.post('/generate-APIimage', async (req, res) => {
             req.session.lastPrompt = prompt;
         }
 
-                console.log('최종 프롬프트:', prompt); // 프롬프트 확인
-                const itemResponse = await openai.chat.completions.create({
-                    model: "gpt-4",
-                    messages: [
-                        { role: "system", content: "You are a fashion designer. you find main item and translate from Korean to English." },
-                        { role: "user", content: `Generate a main fashion item in prompt: ${req.session.lastPrompt}. you just return one korean word.` }
-                    ],
-                    temperature: 0,
-                    max_tokens: 10,
-                });
+          console.log('최종 프롬프트:', prompt); // 프롬프트 확인
+          const itemResponse = await openai.chat.completions.create({
+          model: "gpt-4",
+          messages: [
+              { role: "system", content: "You are a fashion designer. you find main item and translate from Korean to English." },
+              { role: "user", content: `Generate a main fashion item in prompt: ${req.session.lastPrompt}. you just return one korean word.` }
+              ],
+              temperature: 0,
+              max_tokens: 15,
+          });
 
-                const keyfashionitem = itemResponse.choices[0].message.content.trim().replace(/\s+/g, '');;
-                keywordURL = `https://www.musinsa.com/search/goods?keyword=${keyfashionitem}&keywordType=keyword&gf=A`;
+          const keyfashionitem = itemResponse.choices[0].message.content.trim().replace(/\s+/g, '');
+          
+          const keywordURL = `https://www.musinsa.com/search/goods?keyword=${keyfashionitem}&keywordType=keyword&gf=A`;
                     
-                console.log(`${keywordURL}`); //URL확인
+          console.log(`${keywordURL}`); //URL확인
 
         // DALL-E 3 이미지 생성 요청
         const numberOfImages = 4; // 병렬로 생성할 이미지 수
@@ -164,8 +166,9 @@ router.post('/generate-APIimage', async (req, res) => {
         const imageResponses = await Promise.all(imagePromises);
         console.log("사진 생성 완료");
         const images = imageResponses.flatMap((response) =>
-        response.data.map((image) => image.url)
+            response.data.map((image) => image.url)
         );
+
     res.json({ images: images, keywordURL: keywordURL });
 } catch (error) {
     console.error('Error response from OpenAI:', error.response?.data || error.message);
