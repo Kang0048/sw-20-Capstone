@@ -10,7 +10,7 @@ function hideLoading() {
 // generateImages.js
 async function generateUserImages() {
   showLoading();
-  const userInput = document.getElementById('messageContent1').innerHTML;
+  const userInput = document.getElementById('messageContent1').textContent;
   const userItem = document.getElementById('userItem').value;
   const userSeason = document.getElementById('userSeason').value;
   const userWeather = document.getElementById('userWeather').value;
