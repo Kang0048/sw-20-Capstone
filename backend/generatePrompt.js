@@ -17,7 +17,7 @@ async function generatePrompt() {
     const messageContent1 = document.getElementById('messageContent1');
 
     try {
-        const response = await fetch('http://127.0.0.1:5000/generate-APIprompt', {
+        const response = await fetch('/generate-APIprompt', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

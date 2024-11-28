@@ -3,7 +3,7 @@
 const TIME_OUT = 5000;
 const API_KEY = '6e84ebeb9c8eb9215c1d3f8de4de4fa7598cea2719f94ccb6a9109d35d4f5345';
 const PPURIO_ACCOUNT = 'cap123';
-const PROXY_URL = 'http://localhost:5000/api/proxy'; // 프록시 서버 URL
+const PROXY_URL = '/api/proxy'; // 프록시 서버 URL
 
 // 문자 발송 요청 함수
 export async function requestSend(to, from, name, content, filePath) {

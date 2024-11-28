@@ -19,7 +19,7 @@ async function generateUserImages() {
   const urlContent = document.getElementById('urlContent');
 
   //if (!userItem || !userSeason || !userWeather || !userInput) {alert('please fill out all fields')}
-  const response = await fetch('http://127.0.0.1:5000/generate-userImage', {
+  const response = await fetch('/generate-userImage', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

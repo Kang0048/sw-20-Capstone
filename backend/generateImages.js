@@ -16,7 +16,7 @@ async function generateImages() {
     const userInputFix = document.getElementById('InputFix').value;
     const urlContent = document.getElementById('urlContent');
 
-    const response = await fetch('http://127.0.0.1:5000/generate-APIimage', {
+    const response = await fetch('/generate-APIimage', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
