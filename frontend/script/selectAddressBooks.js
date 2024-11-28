@@ -35,7 +35,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                             const modalName = document.createElement('span');
                             modalName.textContent = addressBook.name;
-
+                            const modalreigon = document.createElement('span');
+                            modalreigon.textContent = addressBook.region;
+                            const modalcontactCount = document.createElement('span');
+                            modalcontactCount.textContent = addressBook.contactCount;
                             const selectButton = document.createElement('button');
                             selectButton.classList.add('btn', 'btn-sm', 'btn-primary');
                             selectButton.textContent = '선택';
@@ -45,7 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
 
                             modalListItem.appendChild(modalName);
+                            modalListItem.appendChild(modalreigon);
+                            modalListItem.appendChild(modalcontactCount);
                             modalListItem.appendChild(selectButton);
+                            
                             addressBookListInModal.appendChild(modalListItem);
                         }
                     } else {
