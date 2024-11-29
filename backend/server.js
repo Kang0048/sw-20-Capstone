@@ -99,10 +99,16 @@ app.post('/api/proxy', async (req, res) => {
         try {
           const buffer = Buffer.concat(chunks);
 
-          // 원본 이미지를 JPEG로 변환
-          const jpegBuffer = await sharp(buffer)
-            .jpeg({ quality: 80 }) // 품질 설정 (80%)
+          let jpegBuffer = await sharp(buffer)
+            .jpeg({ quality: 80 }) // 초기 품질 설정
             .toBuffer();
+
+          // 크기 확인 및 400KB 이하로 줄이기
+          while (jpegBuffer.length > 400 * 1024) {
+            jpegBuffer = await sharp(jpegBuffer)
+              .jpeg({ quality: Math.max(10, Math.floor(jpegBuffer.length / 1024 / 5)) }) // 품질 점진적으로 낮춤
+              .toBuffer();
+          }
 
           const base64Image = jpegBuffer.toString('base64');
           res.json({
@@ -125,6 +131,7 @@ app.post('/api/proxy', async (req, res) => {
       .send(error.response?.data || { error: error.message });
   }
 });
+
 
 // Weather API
 const { getWeatherData } = require('../weather/weather.js');
