@@ -37,6 +37,6 @@
 *npm install morgan
 *npm install xlsx
 *npm install sharp
-*cd backend 한 후 touch.env 파일 생성.
+*cd backend 한 후 touch.env 파일 생성. (파일 이름이 touch.env)
 *OPENAI_API_KEY = your-api-key 기입 후 저장
 *node server.js 
