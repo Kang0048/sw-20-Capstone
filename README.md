@@ -33,9 +33,9 @@
 #### 2.2 실행환경 설정
 *실행환경: vscode
 *localhost : [127.0.0.5000]
-cd sw-20
-npm install morgan
-npm install xlxs
-cd backend 한 후 touch.env 파일 생성.
-OPENAI_API_KEY = your-api-key 기입 후 저장
-node server.js 
+*cd sw-20
+*npm install morgan
+*npm install xlxs
+*cd backend 한 후 touch.env 파일 생성.
+*OPENAI_API_KEY = your-api-key 기입 후 저장
+*node server.js 
