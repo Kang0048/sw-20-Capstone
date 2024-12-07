@@ -32,9 +32,8 @@
 
 #### 2.2 결과물
 *실행환경: vscode
-*cd SW-20 한 후
-*npm install morgan
-*npm install xlxs
-*만일의 상황을 위하여 npm install
-*cd backend 한 후 touch.env 파일 생성 한 후 OPENAI_API_KEY = your-api-key 기입 후 저장
-*cd backend 에서 node server.js로 파일 실행
+cd sw-20
+npm install morgan
+cd backend 한 후 touch.env 파일 생성.
+OPENAI_API_KEY = your-api-key 기입 후 저장
+node server.js 
